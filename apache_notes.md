@@ -11,12 +11,12 @@ To assign the password to a particular directory, see the following example:
 
 ```	
 	# 28-APR-07  Add password protection to goals page; lo/pw = xxxxx/yyyyy
-	`<Directory /var/apache/htdocs/intranet/news/goals>`
+	<Directory /var/apache/htdocs/intranet/news/goals>
 	  AuthType Basic
 	  AuthName "4over Priviledged Information"
 	  AuthUserFile /var/apache/etc/goals_passwd
 	  Require valid-user
-	`</Directory>`
+	</Directory>
 ```
 
 
@@ -24,42 +24,42 @@ To allow a particular directory visibility, even though it would otherwise requi
 
 ```	
 	# Special permissions -- allow access w/o validation ...
-	`<Directory /data/djwalters/www/images>`
+	<Directory /data/djwalters/www/images>
 	  Order allow,deny
 	  Allow from all
 	  Options Indexes 
 	  Satisfy any
-	`</Directory>`
+	</Directory>
 ```
 
 Sample Using LDAP instead of "flat file"
 
 ```	
-	`<VirtualHost *:80>`
-	 `<Directory /data/dokuwiki/www/>`
+	<VirtualHost *:80>
+	 <Directory /data/dokuwiki/www/>
 	    Options FollowSymLinks
 	    AllowOverride None
 	    Order deny,allow
 	    Allow from all
 	    Deny from all
-	  `</Directory>`
-	  `<Directory /data/dokuwiki/www/>`
+	  </Directory>
+	  <Directory /data/dokuwiki/www/>
 	    AuthType Basic
 	    AuthName "4over Priviledged Information"
 	    AuthBasicProvider ldap
 	    AuthzLDAPAuthoritative on
 	    AuthLDAPURL ldap://ldap-gln1.4over.com:389/dc=4over,dc=com?uid
 	    AuthLDAPBindDN "cn=directory manager"
-	    AuthLDAPBindPassword minus273
+	    AuthLDAPBindPassword minus271
 	    Require valid-user
-	  `</Directory>`
+	  </Directory>
 	    ServerAdmin webmaster@4over.com
 	    DocumentRoot /data/dokuwiki/www/
 	    ServerName dokuwiki.4over.com
 	    ErrorLog logs/dokuwiki.4over.com-error_log
 	    CustomLog logs/dokuwiki.4over.com-access_log common
 	    ScriptAlias /cgi-bin/ "/data/dokuwiki/cgi-bin/"
-	`</VirtualHost>`
+	</VirtualHost>
 ```
 
 ***__NOTE:__*** You can use BOTH *flat file* and *ldap*...info [here](openshift_enterprise_2.x#ldap)
