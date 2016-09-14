@@ -84,15 +84,15 @@ Next on the web server grab the keytab file (make sure mod_auth_kerb is installe
 Now the config looks something like this
 
 ```	
-	`<VirtualHost *:80>`
-	 `<Directory /var/www/html/montools2>`
+	<VirtualHost *:80>
+	 <Directory /var/www/html/montools2>
 	    Options FollowSymLinks
 	    AllowOverride None
 	    Order deny,allow
 	    Allow from all
 	    Deny from all
-	  `</Directory>`
-	  `<Directory /var/www/html/montools2>`
+	  <Directory>
+	  <Directory /var/www/html/montools2>
 	    Require SSL
 	    AuthType Kerberos
 	    AuthName "4over Priviledged Information"
@@ -100,14 +100,14 @@ Now the config looks something like this
 	    Krb5KeyTab /etc/httpd/conf/krb5.keytab
 	    KrbAuthRealms 4OVER.COM
 	    Require valid-user
-	  `</Directory>`
+	  <Directory>
 	    ServerAdmin webmaster@4over.com
 	    DocumentRoot /var/www/html/montools2
 	    ServerName montools2.4over.com
 	    ErrorLog logs/montools2.4over.com-error_log
 	    CustomLog logs/montools2.4over.com-access_log common
 	    #ScriptAlias /cgi-bin/ "/data/dokuwiki/cgi-bin/"
-	`</VirtualHost>`
+	<VirtualHost>
 ```
 
 For more information on IPA have a look [here](ipa_notes)
@@ -167,7 +167,7 @@ Sample Virtual Host Entry With Directory Access
     Order deny,allow
     Allow from all
     Deny from all
-    `</Directory>`
+    <Directory>
     ServerAdmin donw@4over.com
     DocumentRoot /data/pro_4over/www
     ServerName pro.4over.com
@@ -178,7 +178,7 @@ Sample Virtual Host Entry With Directory Access
 ```
 Sample Virtual Host Entry With Directory Access (CGI-BIN)
 
-With the new version of Apache (2.2 and up) You need a “`<Directory>`” entry. Example below (in bold)
+With the new version of Apache (2.2 and up) You need a `<Directory>` entry. Example below (in bold)
 
 ```
     <VirtualHost 192.168.11.146:80 69.237.62.146:80>
@@ -195,7 +195,7 @@ With the new version of Apache (2.2 and up) You need a “`<Directory>`” entry
     ServerAlias www.pro.4over.com
     ErrorLog /var/apache/logs/pro.4over.com-error_log
     CustomLog /var/apache/logs/pro.4over.com-access_log common
-    `<Directory /data/pro_4over/cgi-bin/>`
+    <Directory /data/pro_4over/cgi-bin/>
     AllowOverride None
     Options None
     Order allow,deny
@@ -259,25 +259,25 @@ You might also need a vhost file...something similar to this
 	SSLPassPhraseDialog  exec:/etc/httpd/ssl/sslpw.sh
 	LoadModule ssl_module modules/mod_ssl.so
 	Listen 443
-	`<VirtualHost *:443>`
-	 `<Directory /data/bidpit>`
+	<VirtualHost *:443>
+	 <Directory /data/bidpit>
 	    Options FollowSymLinks
 	    AllowOverride All
 	    Order deny,allow
 	    Allow from all
 	    Deny from all
-	  `</Directory>`
+	  <Directory>
 	    SSLEngine on
 	    SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
 	    SSLCertificateFile /etc/httpd/ssl/bidpit.com.crt
 	    SSLCertificateKeyFile /etc/httpd/ssl/wildbidpit.key
 	    SSLCertificateChainFile /etc/httpd/ssl/gd_bundle.crt
-	    `<FilesMatch "\.(cgi|shtml|phtml|php)$">`
+	    <FilesMatch "\.(cgi|shtml|phtml|php)$">
 	        SSLOptions +StdEnvVars
-	    `</FilesMatch>`
-	    `<Directory "/usr/local/apache2/cgi-bin">`
+	    <FilesMatch>
+	    <Directory "/usr/local/apache2/cgi-bin">
 	        SSLOptions +StdEnvVars
-	    `</Directory>`
+	    <Directory>
 	    BrowserMatch ".*MSIE.*" \
 	             nokeepalive ssl-unclean-shutdown \
 	             downgrade-1.0 force-response-1.0
@@ -289,7 +289,7 @@ You might also need a vhost file...something similar to this
 	    ServerAlias beta.bidpit.com
 	    ErrorLog /var/log/httpd/bidpit.com-ssl_error_log
 	    DirectoryIndex index.php
-	`</VirtualHost>`
+	<VirtualHost>
 	#
 	#-30-
 
