@@ -110,7 +110,7 @@ Now the config looks something like this
 	<VirtualHost>
 ```
 
-For more information on IPA have a look [here](ipa_notes)
+For more information on IPA have a look [here](ipa_notes.md)
 # Rewrite Rules
 
 Sample re-write to another site
