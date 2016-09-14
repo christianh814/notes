@@ -1,4 +1,4 @@
-[Linux Notes](Linux Notes)<br />
+#Linux Notes
 [apache_notes](apache_notes.md)<br />
 [centos_ds_quick-notes](centos_ds_quick-notes.md)<br />
 [chef_notes](chef_notes.md)<br />
