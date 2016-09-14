@@ -1,5 +1,5 @@
 #Linux Notes
-[apache notes](apache_notes.md)<br />
+[Apache Notes](apache_notes.md)<br />
 [centos ds_quick-notes](centos_ds_quick-notes.md)<br />
 [chef notes](chef_notes.md)<br />
 [cluster suite](cluster_suite.md)<br />
