@@ -1,51 +1,51 @@
-[Linux Notes](Linux Notes)
-[apache_notes](apache_notes.md)
-[centos_ds_quick-notes](centos_ds_quick-notes.md)
-[chef_notes](chef_notes.md)
-[cluster_suite](cluster_suite.md)
-[create_local_yum_repo](create_local_yum_repo.md)
-[dhcp_notes](dhcp_notes.md)
-[dns_notes](dns_notes.md)
-[docker-io](docker-io.md)
-[encrypted_volumes](encrypted_volumes.md)
-[firewalld_notes](firewalld_notes.md)
-[ftp_notes](ftp_notes.md)
-[gfs2](gfs2.md)
-[git_notes](git_notes.md)
-[glusterfs_notes](glusterfs_notes.md)
-[grub2_notes](grub2_notes.md)
-[haproxy](haproxy.md)
-[ipa_notes](ipa_notes.md)
-[iscsi_notes](iscsi_notes.md)
-[jboss](jboss.md)
-[journalctl](journalctl.md)
-[kubernetes](kubernetes.md)
-[kubernetes_v2](kubernetes_v2.md)
-[kvm_notes](kvm_notes.md)
-[linux_notes](linux_notes.md)
-[linux_routing_notes](linux_routing_notes.md)
-[lvm_notes](lvm_notes.md)
-[mail_notes](mail_notes.md)
-[mysql_notes](mysql_notes.md)
-[network_bridge](network_bridge.md)
-[nfs](nfs.md)
-[nginx_notes](nginx_notes.md)
-[nic_bonding_notes](nic_bonding_notes.md)
-[nmcli](nmcli.md)
-[ntp_notes](ntp_notes.md)
-[openshift](openshift.md)
-[rhel_ad_authentication](rhel_ad_authentication.md)
-[rhev-m_notes](rhev-m_notes.md)
-[rhn](rhn.md)
-[scripting_notes](scripting_notes.md)
-[ssh_notes](ssh_notes.md)
-[sub_interface_notes](sub_interface_notes.md)
-[subnetting](subnetting.md)
-[syslog](syslog.md)
-[systemd_notes](systemd_notes.md)
-[tcp_wrapers](tcp_wrapers.md)
-[tmux_notes](tmux_notes.md)
-[varnish_notes](varnish_notes.md)
-[vnc_notes](vnc_notes.md)
-[vsftp_notes](vsftp_notes.md)
-[xfs](xfs.md)
+[Linux Notes](Linux Notes)<br />
+[apache_notes](apache_notes.md)<br />
+[centos_ds_quick-notes](centos_ds_quick-notes.md)<br />
+[chef_notes](chef_notes.md)<br />
+[cluster_suite](cluster_suite.md)<br />
+[create_local_yum_repo](create_local_yum_repo.md)<br />
+[dhcp_notes](dhcp_notes.md)<br />
+[dns_notes](dns_notes.md)<br />
+[docker-io](docker-io.md)<br />
+[encrypted_volumes](encrypted_volumes.md)<br />
+[firewalld_notes](firewalld_notes.md)<br />
+[ftp_notes](ftp_notes.md)<br />
+[gfs2](gfs2.md)<br />
+[git_notes](git_notes.md)<br />
+[glusterfs_notes](glusterfs_notes.md)<br />
+[grub2_notes](grub2_notes.md)<br />
+[haproxy](haproxy.md)<br />
+[ipa_notes](ipa_notes.md)<br />
+[iscsi_notes](iscsi_notes.md)<br />
+[jboss](jboss.md)<br />
+[journalctl](journalctl.md)<br />
+[kubernetes](kubernetes.md)<br />
+[kubernetes_v2](kubernetes_v2.md)<br />
+[kvm_notes](kvm_notes.md)<br />
+[linux_notes](linux_notes.md)<br />
+[linux_routing_notes](linux_routing_notes.md)<br />
+[lvm_notes](lvm_notes.md)<br />
+[mail_notes](mail_notes.md)<br />
+[mysql_notes](mysql_notes.md)<br />
+[network_bridge](network_bridge.md)<br />
+[nfs](nfs.md)<br />
+[nginx_notes](nginx_notes.md)<br />
+[nic_bonding_notes](nic_bonding_notes.md)<br />
+[nmcli](nmcli.md)<br />
+[ntp_notes](ntp_notes.md)<br />
+[openshift](openshift.md)<br />
+[rhel_ad_authentication](rhel_ad_authentication.md)<br />
+[rhev-m_notes](rhev-m_notes.md)<br />
+[rhn](rhn.md)<br />
+[scripting_notes](scripting_notes.md)<br />
+[ssh_notes](ssh_notes.md)<br />
+[sub_interface_notes](sub_interface_notes.md)<br />
+[subnetting](subnetting.md)<br />
+[syslog](syslog.md)<br />
+[systemd_notes](systemd_notes.md)<br />
+[tcp_wrapers](tcp_wrapers.md)<br />
+[tmux_notes](tmux_notes.md)<br />
+[varnish_notes](varnish_notes.md)<br />
+[vnc_notes](vnc_notes.md)<br />
+[vsftp_notes](vsftp_notes.md)<br />
+[xfs](xfs.md)<br />
