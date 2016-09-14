@@ -10,38 +10,38 @@ You will need
 
 
 Install following repos
-      epel
-      Centos-testing
+- epel
+- Centos-testing
 
 Install packages
 
-	
+```
 	root@host# yum --enablerepo=epel -y install java-1.6.0-openjdk.i386
 	root@host# yum --enablerepo=c5-testing -y install centos-ds
 	root@host# yum -y install xorg-x11-xauth bitstream-vera-fonts dejavu-lgc-fonts urw-fonts
-
+```
 
 Create CDS user/group
 
-	
+```	
 	root@host# useradd -c "Centos Directory Server" -s /bin/true cds
 	root@host# echo "/bin/true" >> /etc/shells
-
+```
 
 Fix Logs
 
-	
+```	
 	root@host# cd /var/log
 	root@host# chgrp cds dirsrv && chmod g+w dirsrv
+```
 
-
-Run // setup-ds-admin.pl // (Accepting defaults should be ok IF you set up dns/hostname correctly)
+Run `setup-ds-admin.pl` (Accepting defaults should be ok IF you set up dns/hostname correctly)
 
 Start on boot
          chkconfig dirsrv on
          chkconfig dirsrv-admin on
 
-Run // centos-idm-console //
+Run `centos-idm-console`
            User ID: cn=directory manager
            Password: `<the directory manager password>`
            Administration URL: 127.0.0.1:9830
