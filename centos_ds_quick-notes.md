@@ -1,9 +1,10 @@
 # PREREQ
+You will need
 
-Install CENTOS
-Install ALL updates
-Install bind-chroot
-Configure DNS for domain (maybe example.org with ldap ip of 192.168.1.248 ?)
+- Install CENTOS
+- Install ALL updates
+- Install bind-chroot
+- Configure DNS for domain (maybe example.org with ldap ip of 192.168.1.248 ?)
 
 # INSTALLATION/CONFIG
 
