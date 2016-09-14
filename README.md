@@ -1,7 +1,7 @@
 #Linux Notes
 [Apache Notes](apache_notes.md)<br />
 [Centos DS Quick Notes](centos_ds_quick-notes.md)<br />
-[chef notes](chef_notes.md)<br />
+[Chef Notes](chef_notes.md)<br />
 [cluster suite](cluster_suite.md)<br />
 [create local yum repo](create_local_yum_repo.md)<br />
 [dhcp notes](dhcp_notes.md)<br />
