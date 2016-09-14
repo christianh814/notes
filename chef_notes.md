@@ -83,7 +83,7 @@ __Create CookBook__
 	root@host# knife cookbook create `<name>`
 
 
-Sample NTP cookbook
+__Sample NTP cookbook__
 
 Step One:Run the create command
 
