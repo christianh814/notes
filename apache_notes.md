@@ -62,7 +62,7 @@ Sample Using LDAP instead of "flat file"
 	</VirtualHost>
 ```
 
-***__NOTE:__*** You can use BOTH *flat file* and *ldap*...info [here](openshift_enterprise_2.x#ldap)
+***__NOTE:__*** You can use BOTH *flat file* and *ldap*...info [here](openshift_enterprise_2.x.md#ldap)
 
 __Sample Using Kerberos__
 
