@@ -1,6 +1,6 @@
 #Linux Notes
 [Apache Notes](apache_notes.md)<br />
-[centos ds_quick-notes](centos_ds_quick-notes.md)<br />
+[centos DS Quick Notes](centos_ds_quick-notes.md)<br />
 [chef notes](chef_notes.md)<br />
 [cluster suite](cluster_suite.md)<br />
 [create local yum repo](create_local_yum_repo.md)<br />
