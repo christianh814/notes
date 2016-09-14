@@ -121,7 +121,7 @@ This creates a directory structure for the ntp cookbook. You can check it out wi
 	
 	This is where all the fun stuff happens. When using resources, you’re writing things in a declarative fashion. Declarative means you can concentrate on the WHAT without having to worry about the HOW. Chef will take care of that for you with something called a resource provider. When installing a package, it will check to see what your operating system is and use the appropriate methodology. For example, on Debian based systems, it will use apt-get, and on Redhat based systems, it will use yum.
 	
-	`<code>`
+```
 	
 	root@host# vim cookbooks/ntp/recipes/default.rb
 	 
@@ -138,7 +138,7 @@ This creates a directory structure for the ntp cookbook. You can check it out wi
 	service "ntpd" do
 	    action [:enable,:start]
 	end
-
+```
 
 Chef recipes are evaluated top down (like a normal ruby program), with each resource being run in the order it appears. Order is important. In the above example, if we were to reverse the order of those three resources, it would first fail to start the service (as the software is not installed yet), then write the configuration file, then finally clobber the file it just wrote by installing the package.
 
@@ -166,7 +166,8 @@ Step Five : uploading the cookbook to chef-server
 
 Step Six: Edit node config
 
-`<code>`root@host# export EDITOR=vi knife node edit `<node name>`
+```
+root@host# export EDITOR=vi knife node edit server1
 
 {
     "name": "itdb.4over.com",
@@ -184,7 +185,7 @@ Step Six: Edit node config
 }
 
 
-`</code>`
+```
 
 __Re-adding a Client/Node__
 
