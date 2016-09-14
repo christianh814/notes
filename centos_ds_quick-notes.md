@@ -38,51 +38,53 @@ Fix Logs
 Run `setup-ds-admin.pl` (Accepting defaults should be ok IF you set up dns/hostname correctly)
 
 Start on boot
+```
          chkconfig dirsrv on
          chkconfig dirsrv-admin on
-
+```
 Run `centos-idm-console`
+```
            User ID: cn=directory manager
            Password: `<the directory manager password>`
            Administration URL: 127.0.0.1:9830
-
+```
 Click: ldap.example.org > Directory Server > Open
 
-*  Click "Directory" tab
+- Click "Directory" tab
 
-*  Right-Click your Domain (in this case "example" for example.org) to add user/group
+- Right-Click your Domain (in this case "example" for example.org) to add user/group
 
-*  For the Group Right-Click group name (after you created it) and select "Advanced Properties"
+- For the Group Right-Click group name (after you created it) and select "Advanced Properties"
      * Click on "Objet Class"
      * Click on "Add Value"
      * Scoll down and select "posixgroup" and click OK
      * This creates a new field called "gidnumber" -- go ahead and add the POSIX gid number there 
 
 Create "top" level home directory (i.e. if it's "/rhome/username" then...):
-          root@host# mkdir -m 755 /rhome
+       `   root@host# mkdir -m 755 /rhome`
 
-Add this to /etc/pam.d/login and /etc/pam.d/sshd (also /etc/pam.d/gdm for GUI logins) For BOTH ldap server/client
-	auth sufficient pam_ldap.so
+Add this to `/etc/pam.d/login` and `/etc/pam.d/sshd` (also `/etc/pam.d/gdm` for GUI logins) For BOTH ldap server/client
+```	auth sufficient pam_ldap.so
 	account sufficient pam_ldap.so
 	password sufficient pam_ldap.so
-	(you may also need "session sufficient pam_ldap.so" maybe?)
+	(you may also need "session sufficient pam_ldap.so" maybe?)```
 
 For the LDAP server do this:
-	root@host# authconfig --enableldap --enableldapauth --enablemkhomedir --ldapserver=127.0.0.1 --ldapbasedn="dc=example,dc=org" --update
+```	root@host# authconfig --enableldap --enableldapauth --enablemkhomedir --ldapserver=127.0.0.1 --ldapbasedn="dc=example,dc=org" --update```
 For the LDAP client do this:
-	root@host# authconfig --enableldap --enableldapauth --enablemkhomedir --ldapserver=192.168.1.248 --ldapbasedn="dc=example,dc=org" --update
+```	root@host# authconfig --enableldap --enableldapauth --enablemkhomedir --ldapserver=192.168.1.248 --ldapbasedn="dc=example,dc=org" --update```
 
 Set up automount of homedirs
 
 /etc/auto.master
-         	/rhome	/etc/auto.rhome	--timeout=60
+  `       	/rhome	/etc/auto.rhome	--timeout=60`
 
 /etc/auto.rhome
 `*	-rw,intr,soft	netapp-gln:/vol/home/&`
 
 Restart Service
 
-	
+```	
 	root@host# service autofs restart
 	root@host# chkconfig autofs on
-
+```
