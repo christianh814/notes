@@ -72,16 +72,17 @@ password sufficient pam_ldap.so
 ```
 
 For the LDAP server do this:<br /><br />
-```	root@host# authconfig --enableldap --enableldapauth --enablemkhomedir --ldapserver=127.0.0.1 --ldapbasedn="dc=example,dc=org" --update```
+```root@host# authconfig --enableldap --enableldapauth --enablemkhomedir --ldapserver=127.0.0.1 --ldapbasedn="dc=example,dc=org" --update```
+
 For the LDAP client do this:<br /><br />
-```	root@host# authconfig --enableldap --enableldapauth --enablemkhomedir --ldapserver=192.168.1.248 --ldapbasedn="dc=example,dc=org" --update```
+```root@host# authconfig --enableldap --enableldapauth --enablemkhomedir --ldapserver=192.168.1.248 --ldapbasedn="dc=example,dc=org" --update```
 
 Set up automount of homedirs<br />
 
 /etc/auto.master<br />
   `/rhome	/etc/auto.rhome	--timeout=60`
 
-/etc/auto.rhome
+/etc/auto.rhome<br />
 `*	-rw,intr,soft	netapp-gln:/vol/home/&`
 
 Restart Service
