@@ -60,21 +60,21 @@ Click: ldap.example.org > Directory Server > Open
      * Scoll down and select "posixgroup" and click OK
      * This creates a new field called "gidnumber" -- go ahead and add the POSIX gid number there 
 
-Create "top" level home directory (i.e. if it's "/rhome/username" then...):
+Create "top" level home directory (i.e. if it's "/rhome/username" then...):<br />
        `   root@host# mkdir -m 755 /rhome`
 
-Add this to `/etc/pam.d/login` and `/etc/pam.d/sshd` (also `/etc/pam.d/gdm` for GUI logins) For BOTH ldap server/client
+Add this to `/etc/pam.d/login` and `/etc/pam.d/sshd` (also `/etc/pam.d/gdm` for GUI logins) For BOTH ldap server/client<br />
 ```	auth sufficient pam_ldap.so
 	account sufficient pam_ldap.so
 	password sufficient pam_ldap.so
 	(you may also need "session sufficient pam_ldap.so" maybe?)```
 
-For the LDAP server do this:
+For the LDAP server do this:<br />
 ```	root@host# authconfig --enableldap --enableldapauth --enablemkhomedir --ldapserver=127.0.0.1 --ldapbasedn="dc=example,dc=org" --update```
-For the LDAP client do this:
+For the LDAP client do this:<br />
 ```	root@host# authconfig --enableldap --enableldapauth --enablemkhomedir --ldapserver=192.168.1.248 --ldapbasedn="dc=example,dc=org" --update```
 
-Set up automount of homedirs
+Set up automount of homedirs<br />
 
 /etc/auto.master
   `       	/rhome	/etc/auto.rhome	--timeout=60`
