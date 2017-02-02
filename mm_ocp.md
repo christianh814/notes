@@ -32,17 +32,17 @@ openshift_master_logging_public_url=https://kibana.apps.ocp.nicknach.net/
 ##  cloud provider configs
 ##  AWS
 #openshift_cloudprovider_kind=aws
-#openshift_cloudprovider_aws_access_key=AKIAIJSDCFB4PUGL3CHA
-#openshift_cloudprovider_aws_secret_key=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
+#openshift_cloudprovider_aws_access_key=SKFHLJSDHFLJSDLKFHDSKJFDSFDSFSDFDSFDS
+#openshift_cloudprovider_aws_secret_key=SKDJFHILDSHFUSWNFKJNSDKJNFLDSKJNFLKSDNFSLKDJNFSLKJFNDSf
 ##  Openstack
 #openshift_cloudprovider_kind=openstack
 #openshift_cloudprovider_openstack_auth_url=https://controller.home.nicknach.com:35357/v2.0
 #openshift_cloudprovider_openstack_username=svc-openshift-np
-#openshift_cloudprovider_openstack_password=kX7mE10dkX7mE10d
-#openshift_cloudprovider_openstack_tenant_id=f741ba7204ec47c9886c050891dd592e
+#openshift_cloudprovider_openstack_password=KJHDSLEJFHLKJSDFSDFDSF
+#openshift_cloudprovider_openstack_tenant_id=fasjfhasjdflakjsndflsakjndfsajdfs
 #openshift_cloudprovider_openstack_tenant_name=nn-dev
 #openshift_cloudprovider_openstack_region=RegionOne
-#openshift_cloudprovider_openstack_lb_subnet_id=d7c61f2a-d591-461d-af28-308ade046c0d
+#openshift_cloudprovider_openstack_lb_subnet_id=222222222-2222-461d-af28-322222222222
 
 ## domain stuff
 osm_default_subdomain=apps.ocp.nicknach.net
