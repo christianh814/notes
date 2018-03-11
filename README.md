@@ -5,3 +5,4 @@ These are my personal notes that I've collected over the years, documenting my e
 * [GIT Notes](documents/git_notes.md)
 * [GlusterFS Notes](documents/glusterfs_notes.md)
 * [FirewallD Notes](documents/firewalld_notes.md)
+* [SystemD Notes](documents/systemd_notes.md)
