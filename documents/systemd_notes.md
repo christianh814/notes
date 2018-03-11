@@ -8,12 +8,12 @@ This is my `systemd` notes, in no paticular order
 
 | `sysvinit` Command | `systemd` Command | Notes |
 | -------------------- | ------------------- | ------- |
-| service frobozz start |systemctl start frobozz.service|Used to start a service (not reboot persistent)|
-| service frobozz stop |systemctl stop frobozz.service|Used to stop a service (not reboot persistent)|
-| service frobozz restart |systemctl restart frobozz.service|Used to stop and then start a service|
-| service frobozz reload |systemctl reload frobozz.service|When supported, reloads the config file without interrupting pending operations.|
-| service frobozz condrestart |systemctl condrestart frobozz.service|Restarts if the service is already running.|
-| service frobozz status |systemctl status frobozz.service | Tells whether a service is currently running. |
+| service frobozz start | systemctl start frobozz.service | Used to start a service (not reboot persistent) |
+| service frobozz stop | systemctl stop frobozz.service | Used to stop a service (not reboot persistent) |
+| service frobozz restart | systemctl restart frobozz.service | Used to stop and then start a service |
+| service frobozz reload | systemctl reload frobozz.service | When supported, reloads the config file without interrupting pending operations. |
+| service frobozz condrestart | systemctl condrestart frobozz.service | Restarts if the service is already running. |
+| service frobozz status | systemctl status frobozz.service | Tells whether a service is currently running. |
 | ls /etc/rc.d/init.d/ | systemctl list-unit-files --type=service (preferred) ; ls /lib/systemd/system/*.service /etc/systemd/system/*.service | Used to list the services that can be started or stopped. Used to list all the services and other units |
 | chkconfig frobozz on | systemctl enable frobozz.service | Turn the service on, for start at next boot, or other trigger. |
 | chkconfig frobozz off | systemctl disable frobozz.service | Turn the service off for the next reboot, or any other trigger. |
