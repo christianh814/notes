@@ -7,7 +7,7 @@ This is my `systemd` notes, in no paticular order
 ## SystemV to SystemD Cheatsheet
 
 | `sysvinit` Command | `systemd` Command | Notes |
-|--------------------|-------------------|-------|
+|:--------------------:|-------------------|-------|
 |service frobozz start|systemctl start frobozz.service|Used to start a service (not reboot persistent)|
 |service frobozz stop|systemctl stop frobozz.service|Used to stop a service (not reboot persistent)|
 |service frobozz restart|systemctl restart frobozz.service|Used to stop and then start a service|
