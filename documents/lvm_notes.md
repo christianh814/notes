@@ -356,4 +356,7 @@ Now you can grow the filesystem
 root@host# resize2fs /dev/vg1/brick
 ```
 
-For filesytems that are XFS (as opposed to EXT) consult the XFS notes.
+For filesytems that are XFS
+```
+root@host# xfs_growfs /mountpoint
+``
