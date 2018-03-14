@@ -357,6 +357,7 @@ root@host# resize2fs /dev/vg1/brick
 ```
 
 For filesytems that are XFS
+
 ```
 root@host# xfs_growfs /mountpoint
-``
+```
