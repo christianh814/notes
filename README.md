@@ -8,3 +8,4 @@ These are my personal notes that I've collected over the years, documenting my e
 * [SystemD Notes](documents/systemd_notes.md)
 * [NIC Bonding Notes](documents/nic_bonding_notes.md)
 * [NetworkManager Notes](documents/nmcli_notes.md)
+* [Network Bridge Notes](documents/network_bridge_notes.md)
