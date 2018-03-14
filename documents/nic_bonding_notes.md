@@ -118,4 +118,4 @@ root@host# cat /proc/net/bonding/bond0
 
 ## EL 7
 
-The steps above will work with EL7 - but as an alternative `nmcli` offers [network teaming](nmcli_notes.md#network-teaming)
+The steps above will work with EL7 - but as an alternative `nmcli` offers [network teaming](nmcli_notes.md#configuring-networking-teaming)
