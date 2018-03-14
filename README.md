@@ -6,3 +6,5 @@ These are my personal notes that I've collected over the years, documenting my e
 * [GlusterFS Notes](documents/glusterfs_notes.md)
 * [FirewallD Notes](documents/firewalld_notes.md)
 * [SystemD Notes](documents/systemd_notes.md)
+* [NIC Bonding Notes](documents/nic_bonding_notes.md)
+* [WIP-NetworkManager Notes](documents/nmcli_notes.md)
