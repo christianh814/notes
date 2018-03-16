@@ -10,3 +10,4 @@ These are my personal notes that I've collected over the years, documenting my e
 * [NetworkManager Notes](documents/nmcli_notes.md)
 * [Network Bridge Notes](documents/network_bridge_notes.md)
 * [LVM Notes](documents/lvm_notes.md)
+* [Sub Interface Notes](documents/sub_interface_notes.md)
