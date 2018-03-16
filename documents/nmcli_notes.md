@@ -405,9 +405,11 @@ The link_watch settings in the configuration file determines how the link state 
 "link_watch": {
     "name": "ethtool"
 }
-</code>
+```
+
 Another way to check link state is to periodically use an ARP ping packet to check for remote connectivity. Local and remote IP addresses and timeouts would have to be specified. A configuration that would accomplish that would look similar to the following:
-<code>
+
+```
 "link_watch":{
     "name": "arp_ping",
     "interval": 100,
