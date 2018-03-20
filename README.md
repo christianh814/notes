@@ -13,3 +13,4 @@ These are my personal notes that I've collected over the years, documenting my e
 * [Sub Interface Notes](documents/sub_interface_notes.md)
 * [FTP Notes](documents/ftp_notes.md)
 * [Postfix Notes](documents/postfix_notes.md)
+* [SSH Notes](documents/ssh_notes.md)
