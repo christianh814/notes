@@ -14,3 +14,4 @@ These are my personal notes that I've collected over the years, documenting my e
 * [FTP Notes](documents/ftp_notes.md)
 * [Postfix Notes](documents/postfix_notes.md)
 * [SSH Notes](documents/ssh_notes.md)
+* [MySQL Notes](documents/mysql_notes.md)
