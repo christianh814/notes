@@ -15,3 +15,4 @@ These are my personal notes that I've collected over the years, documenting my e
 * [Postfix Notes](documents/postfix_notes.md)
 * [SSH Notes](documents/ssh_notes.md)
 * [MySQL Notes](documents/mysql_notes.md)
+* [DHCP Notes](documents/dhcp_notes.md)
