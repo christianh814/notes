@@ -6,6 +6,7 @@ These are glusterfs notes in no paticular order. Old 3.1 notes can be found [her
 * [Building a Trusted Storage Pool](#building-a-trusted-storage-pool)
 * [Creating Bricks](#creating-bricks)
 * [Building a Volume](#building-a-volume)
+* [Client](#client)
 
 ## Installation
 
@@ -340,4 +341,40 @@ servera:/bricks/brick-a6/brick \
 serverb:/bricks/brick-b6/brick \
 serverc:/bricks/brick-c6/brick \
 serverd:/bricks/brick-d6/brick froce
+```
+## Client
+
+The native client is installed by default on Red Hat Gluster Storage servers. On Red Hat Enterprise Linux 7 systems the client is available in the `glusterfs-fuse` package in the `rhel-x86_64-server-7-rh-gluster-3-client` channel, and in the `rhel-x86_64-server-rh-common-7` channel, although the latter may be deprecated in the future.
+
+Red Hat Enterprise Linux 6 clients can install the client using the `glusterfs-fuse` package in the `rhel-x86_64-server-rhsclient-6` channel. Red Hat Enterprise Linux 5 clients should use the `rhel-x86_64-server-rhsclient-5` channel.
+
+After subscribing, install via
+
+```
+yum -y install glusterfs-fuse
+```
+
+You can easily mount it with `mount.glusterfs`
+
+```
+mount.glusterfs servera:custdata /mnt
+```
+
+Use  `backup-volfile-servers` to connect to other servers. Use `acl` for POSIX access control
+
+```
+mount.glusterfs -o backup-volfile-servers=servera:serverb:serverc:serverd,acl servera:custdata /mnt
+```
+
+Using `_netdev` in the `/etc/fstab` is a smart move
+
+```
+servera:custdata	/mnt	glusterfs	_netdev,backup-volfile-servers=servera:serverb:serverc:serverd,acl 0 0
+```
+
+Timeout is very slow by default, so you may want to shorten the timeout on the gluster server
+
+```
+root@servera# gluster volume set custdata network.frame-timeout 60
+root@servera# gluster volume set custdata network.ping-timeout 20
 ```
