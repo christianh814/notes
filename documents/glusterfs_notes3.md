@@ -7,6 +7,7 @@ These are glusterfs notes in no paticular order. Old 3.1 notes can be found [her
 * [Creating Bricks](#creating-bricks)
 * [Building a Volume](#building-a-volume)
 * [Client](#client)
+* [NFS](#nfs)
 
 ## Installation
 
@@ -377,4 +378,52 @@ Timeout is very slow by default, so you may want to shorten the timeout on the g
 ```
 root@servera# gluster volume set custdata network.frame-timeout 60
 root@servera# gluster volume set custdata network.ping-timeout 20
+```
+
+## NFS
+
+By default, any new Red Hat Gluster Storage volume will be exported over NFSv3, with ACLs enabled. This is for clients that can not run the native client.
+
+NFSv3 exports do not use the NFSv3 server in the Linux kernel. Instead they use a dedicated NFSv3 server written in gluster, that only exports over TCP.
+
+Unlike the native client, clients using NFSv3 will not automatically fail over during a failure.
+
+
+You can see the built in NFS export with the `volume status` command
+
+```
+[root@servera ~]# gluster volume status mediadata
+Status of volume: mediadata
+Gluster process                             TCP Port  RDMA Port  Online  Pid
+------------------------------------------------------------------------------
+Brick servera:/bricks/brick-a1/brick        49159     0          Y       3038
+Brick serverb:/bricks/brick-b1/brick        49159     0          Y       1917
+Brick serverc:/bricks/brick-c1/brick        49159     0          Y       1926
+Brick serverd:/bricks/brick-d1/brick        49159     0          Y       1900
+NFS Server on localhost                     2049      0          Y       3018
+NFS Server on serverc.lab.example.com       2049      0          Y       1935
+NFS Server on serverd.lab.example.com       2049      0          Y       1879
+NFS Server on serverb.lab.example.com       2049      0          Y       1935
+
+Task Status of Volume mediadata
+------------------------------------------------------------------------------
+There are no active volume tasks
+```
+
+In order to mount this from the client, you need to open `nfs` and (since it's NFSv3) `rpc-bind` on the firewall
+
+```
+[root@servera ~]# firewall-cmd --permanent --add-service=nfs --add-service=rpc-bind
+success
+[root@servera ~]# firewall-cmd --reload
+success
+```
+
+
+On the client, mount with v3 options
+```
+[root@workstation ~]# mount.nfs -o vers=3,proto=tcp servera:/mediadata /mnt/mediadata/
+[root@workstation ~]# df -hF nfs
+Filesystem          Size  Used Avail Use% Mounted on
+servera:/mediadata  8.0G  130M  7.9G   2% /mnt/mediadata
 ```
