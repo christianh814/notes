@@ -16,3 +16,4 @@ These are my personal notes that I've collected over the years, documenting my e
 * [SSH Notes](documents/ssh_notes.md)
 * [MySQL Notes](documents/mysql_notes.md)
 * [DHCP Notes](documents/dhcp_notes.md)
+* [Linux Routing Notes](documents/linux_routing_notes.md)
