@@ -70,7 +70,7 @@ root@host# sysctl -p
 Specific steps for different OSes below
 
 * [RHEL 6](#rhel-6)
-* [RHEL 7](#rhel-6)
+* [RHEL 7](#rhel-7)
 
 ## RHEL 6
 
@@ -104,7 +104,7 @@ root@host# service iptables restart
 
 This assumes that the interface eth1 may have public IP address or IP assigned by ISP. eth1 may be connected to a dedicated DSL / ADSL / WAN / Cable router.
 
-## RHEL 6
+## RHEL 7
 
 These are quicknotes
 
