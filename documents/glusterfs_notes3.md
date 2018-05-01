@@ -8,6 +8,7 @@ These are glusterfs notes in no paticular order. Old 3.1 notes can be found [her
 * [Building a Volume](#building-a-volume)
 * [Client](#client)
 * [NFS](#nfs)
+* [CIFS](#cifs)
 
 ## Installation
 
@@ -426,4 +427,137 @@ On the client, mount with v3 options
 [root@workstation ~]# df -hF nfs
 Filesystem          Size  Used Avail Use% Mounted on
 servera:/mediadata  8.0G  130M  7.9G   2% /mnt/mediadata
+```
+
+## CIFS
+
+You can use gluster to serve CIFS shares (Windows); using glusterfs as the backend storage system.
+
+First, add the appropriate firewall rules
+
+```
+[root@servera ~]# firewall-cmd --permanent --add-service=samba
+success
+[root@servera ~]# firewall-cmd --reload
+success
+```
+
+Next, install `samba`
+
+```
+[root@servera ~]# yum -y install samba
+```
+
+Next, start and enable the service
+
+```
+[root@servera ~]# systemctl enable smb.service
+Created symlink from /etc/systemd/system/multi-user.target.wants/smb.service to /usr/lib/systemd/system/smb.service.
+
+[root@servera ~]# systemctl start smb.service
+```
+
+Create a user and map it back to samba
+
+```
+[root@servera ~]# adduser smbuser
+
+[root@servera ~]# smbpasswd -a smbuser
+New SMB password:
+Retype new SMB password:
+Added user smbuser.
+```
+
+Now export a volume over smb; first you need to set some volume options
+
+```
+[root@servera ~]# gluster volume set mediadata stat-prefetch off
+volume set: success
+
+[root@servera ~]# gluster volume set mediadata server.allow-insecure on
+volume set: success
+
+[root@servera ~]# gluster volume set mediadata storage.batch-fsync-delay-usec 0
+volume set: success
+```
+
+Configure `glusterd`  to allow Samba to communicate with bricks using insecure ports by editing the `/etc/glusterfs/glusterd.vol` file to include `option rpc-auth-allow-insecure on`
+
+```
+[root@servera ~]# cat /etc/glusterfs/glusterd.vol
+volume management
+    type mgmt/glusterd
+    option working-directory /var/lib/glusterd
+    option transport-type socket,rdma
+    option transport.socket.keepalive-time 10
+    option transport.socket.keepalive-interval 2
+    option transport.socket.read-fail-log off
+    option ping-timeout 0
+    option event-threads 1
+    ### ADDING THIS LINE
+    option rpc-auth-allow-insecure on
+    ###
+#   option base-port 49152
+end-volume
+```
+
+Restart `glusterd`
+
+```
+[root@servera ~]# systemctl restart glusterd
+```
+
+Now restart the volume to export it as a samba share
+
+```
+[root@servera ~]# gluster volume stop mediadata
+Stopping volume will make its data inaccessible. Do you want to continue? (y/n)
+volume stop: mediadata: success
+
+[root@servera ~]#  gluster volume start mediadata
+volume start: mediadata: success
+```
+
+Now, on the client, test to see if you can access the share via samba
+
+```
+[student@workstation ~]$ smbclient -L servera -U smbuser%redhat
+Domain=[MYGROUP] OS=[Windows 6.1] Server=[Samba 4.2.4]
+
+	Sharename       Type      Comment
+	---------       ----      -------
+	gluster-mediadata Disk      For samba share of volume mediadata
+	IPC$            IPC       IPC Service (Samba Server Version 4.2.4)
+Domain=[MYGROUP] OS=[Windows 6.1] Server=[Samba 4.2.4]
+
+	Server               Comment
+	---------            -------
+
+	Workgroup            Master
+	---------            -------
+```
+
+If you see that, you should be able to mount the share
+
+Create a dir for the share
+
+```
+[student@workstation ~]$ sudo mkdir /mnt/smbdata
+```
+
+Add it to `/etc/fstab`
+
+```
+[student@workstation ~]$ grep cifs /etc/fstab
+//servera/gluster-mediadata	/mnt/smbdata	cifs	user=smbuser,pass=redhat	0 0
+```
+
+Mount the share
+
+```
+[student@workstation ~]$ sudo mount /mnt/smbdata/
+
+[student@workstation ~]$ df -h /mnt/smbdata/
+Filesystem                   Size  Used Avail Use% Mounted on
+//servera/gluster-mediadata  8.0G  131M  7.9G   2% /mnt/smbdata
 ```
