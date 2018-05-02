@@ -9,6 +9,7 @@ These are glusterfs notes in no paticular order. Old 3.1 notes can be found [her
 * [Client](#client)
 * [NFS](#nfs)
 * [CIFS](#cifs)
+* [Volume Options](#volume-options)
 
 ## Installation
 
@@ -560,4 +561,41 @@ Mount the share
 [student@workstation ~]$ df -h /mnt/smbdata/
 Filesystem                   Size  Used Avail Use% Mounted on
 //servera/gluster-mediadata  8.0G  131M  7.9G   2% /mnt/smbdata
+```
+## Volume Options
+
+You can set specific options to volumes to change the behavior. The list is extensive. You can get a list of them by running...
+
+```
+[root@servera ~]# gluster volume set help
+```
+
+To set an option; use the `gluster volume set <VOLUME NAME> <OPTION> <VALUE>` syntax
+
+```
+[root@servera ~]# gluster volume set mediadata features.read-only on
+```
+
+You can reset the option to it's default value with `gluster volume reset <VOLUME NAME> <OPTION>`
+
+```
+[root@servera ~]# gluster volume reset mediadata features.read-only
+```
+
+To show all options are set on a volume
+
+```
+[root@servera ~]# gluster volume get mediadata all
+```
+
+To show specific option status
+
+```
+[root@servera ~]# gluster volume get mediadata features.read-only
+```
+
+To show non-default options are set on a volume
+
+```
+[root@servera ~]# gluster volume info mediadata
 ```
