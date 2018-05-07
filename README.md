@@ -18,3 +18,4 @@ These are my personal notes that I've collected over the years, documenting my e
 * [DHCP Notes](documents/dhcp_notes.md)
 * [Linux Routing Notes](documents/linux_routing_notes.md)
 * [Apache Notes](documents/apache_notes.md)
+* [Varnish Notes](documents/varnish_notes.md)
