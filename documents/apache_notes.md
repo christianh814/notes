@@ -2,12 +2,12 @@
 
 Here are some Apache notes in no paticular order
 
-[Requre Password](#require-password)
-[Rewrite Rules](#rewrite-rules)
-[Vitual Hosts](#virtual-hosts)
-[Big5 Apache Logging](#big5-apache-logging)
-[SSL](#ssl)
-[Misc](#misc)
+* [Requre Password](#require-password)
+* [Rewrite Rules](#rewrite-rules)
+* [Vitual Hosts](#virtual-hosts)
+* [Big5 Apache Logging](#big5-apache-logging)
+* [SSL](#ssl)
+* [Misc](#misc)
 
 ## Require Password
 
