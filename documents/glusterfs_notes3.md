@@ -609,4 +609,89 @@ You can set access control lists and Quotas with gluster.
 
 ### ACLs
 
+You can enable ACLs by adding `acl` as a mount option. ACLs is handled by the `setfacl` and `getfacl`
+
+```
+mount.glusterfs -o backup-volfile-servers=servera:serverb:serverc:serverd,acl servera:custdata /mnt
+```
+
+You can also put this in the `/etc/fstab` as well.
+
+Now you should be able to assign ACLs
+
+```
+setfacl -m u:lisa:rwX /mnt/springfield-library
+
+```
+
+To make it "default"...
+
+```
+setfacl -m d:g:admins:rX /mnt/springfield-library
+```
+
 ### Quotas
+
+Gluster supports setting quotas on individual directories in a volume. This allows an admin to control where storage is being used. Unlike the file system quotas, this is done on a directory basis, and not on a user/group basis.
+
+To enable quotas on a volume
+
+```
+gluster volume quota <VOLUME> enable
+```
+
+Note that quotas are not set for the entire volume by default, but for individual directories in that volume. To limit the entire volume, a limit can be placed on `/` on that volume. Also, after enabling a quota, clients using the native client must remount the volume.
+
+The dir must exists first; so make sure it's there or create it
+
+```
+user@client$ mkdir /mnt/graphics/raw
+user@client$ sudo umount /mnt/graphics
+```
+
+On one of the gluster servers; set up the volume to be quota-fied
+
+```
+[root@servera ~]# gluster volume quota graphics enable
+volume quota : success
+```
+
+Now you can set a hard limit of `1GB` and the soft limit (the warning limit) to `50%` by using the `limit-usage /path` option (where `/path` is relative to the volume, not where it will be mounted)
+
+```
+[root@servera ~]# gluster volume quota graphics limit-usage /raw 1GB 50%
+volume quota : success
+```
+
+So above; the limit will be set on `/mnt/graphics/raw` on the client.
+
+Now you can set the `soft-timeout` (number of seconds to wait until after the quota has been reached to throw an error)
+
+```
+[root@servera ~]# gluster volume quota graphics soft-timeout 5s
+volume quota : success
+```
+
+You can do the same for `hard-timeout`
+
+```
+[root@servera ~]# gluster volume quota graphics hard-timeout 1s
+volume quota : success
+```
+
+Configure the graphics volume in such a way that the `df` command reports the amount of space left using quotas, and not the physical available space.
+
+```
+[root@servera ~]# gluster volume set graphics quota-deem-statfs on
+volume set: success
+```
+
+You can remount and test the volume
+
+```
+[root@workstation ~]# umount /mnt/graphics
+[root@workstation ~]# mount /mnt/graphics
+[root@workstation ~]# dd if=/dev/zero of=/mnt/graphics/raw/testfile bs=1M
+dd: error writing ’/mnt/graphics/raw/testfile’: Disk quota exceeded
+dd: closing output file ’/mnt/graphics/raw/testfile’: Disk quota exceeded
+```
