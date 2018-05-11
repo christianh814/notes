@@ -10,6 +10,7 @@ These are glusterfs notes in no paticular order. Old 3.1 notes can be found [her
 * [NFS](#nfs)
 * [CIFS](#cifs)
 * [Volume Options](#volume-options)
+* [ACLs And Quotas](#acls-and-quotas)
 
 ## Installation
 
@@ -599,3 +600,13 @@ To show non-default options are set on a volume
 ```
 [root@servera ~]# gluster volume info mediadata
 ```
+## ACLs And Quotas
+
+You can set access control lists and Quotas with gluster.
+
+* [ACLs](#acls)
+* [Quotas](#quotas)
+
+### ACLs
+
+### Quotas
