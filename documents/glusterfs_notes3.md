@@ -11,6 +11,7 @@ These are glusterfs notes in no paticular order. Old 3.1 notes can be found [her
 * [CIFS](#cifs)
 * [Volume Options](#volume-options)
 * [ACLs And Quotas](#acls-and-quotas)
+* [Resizing Volumes](#resizing-volumes)
 
 ## Installation
 
@@ -694,4 +695,103 @@ You can remount and test the volume
 [root@workstation ~]# dd if=/dev/zero of=/mnt/graphics/raw/testfile bs=1M
 dd: error writing ’/mnt/graphics/raw/testfile’: Disk quota exceeded
 dd: closing output file ’/mnt/graphics/raw/testfile’: Disk quota exceeded
+```
+## Resizing Volumes
+
+A volume can be extended, without causing any downtime. You do this by adding bricks to it. Enough bricks must be added to match the current layout. Example, to extend a volume with `replica` set to two, two bricks must be added. Ergo, when extending a 4x2 `distributed-replicated` volume, at a minimum; two bricks or a multiple of two must be added. 
+
+To extend a replicated volume (note, this turns my replicate to a distributed replicate)
+
+```
+[root@servera ~]# gluster volume add-brick myvol serverc:/bricks/brick-c1/brick serverd:/bricks/brick-d1/brick 
+volume add-brick: success
+```
+
+Next you'd want to rebalance the data
+
+```
+[root@servera ~]# gluster volume rebalance  myvol start
+volume rebalance: myvol: success: Rebalance on myvol has been started successfully. Use rebalance status command to check status of the rebalance process.
+ID: db170509-c9dd-4f4c-bc7a-9c19408fd6e6
+```
+
+You can check the status as well
+
+```
+[root@servera ~]# gluster volume rebalance  myvol status
+                                    Node Rebalanced-files          size       scanned      failures       skipped               status   run time in secs
+                               ---------      -----------   -----------   -----------   -----------   -----------         ------------     --------------
+                               localhost               49      980Bytes           100             0             0            completed               3.00
+                 serverb.lab.example.com                0        0Bytes             0             0             0            completed               1.00
+                 serverc.lab.example.com                0        0Bytes             0             0             0            completed               1.00
+                 serverd.lab.example.com                0        0Bytes             0             0             0            completed               1.00
+volume rebalance: myvol: success
+
+```
+
+Volumes can be shrunk by removing bricks. The replica count can be adjusted during removal as well.
+
+When shrinking `distributed-replicated` volumes, the number of bricks being removed must be a multiple of the replica count. I.E. to shrink a distributed-replicated volume with a replica count of two, bricks need to be remove in multiples of two.
+
+
+To shrink a volume, remove the bricks (making sure you maintain the layout or you get dataloss)
+
+```
+[root@servera ~]# gluster volume info myvol
+
+Volume Name: myvol
+Type: Distributed-Replicate
+Volume ID: e6916f89-9e1d-4283-8549-5caa16e695cb
+Status: Started
+Number of Bricks: 2 x 2 = 4
+Transport-type: tcp
+Bricks:
+Brick1: servera:/bricks/brick-a2/brick
+Brick2: serverb:/bricks/brick-b2/brick
+Brick3: serverc:/bricks/brick-c2/brick
+Brick4: serverd:/bricks/brick-d2/brick
+Options Reconfigured:
+performance.readdir-ahead: on
+```
+
+Here I would choose `serverc:/bricks/brick-c2/brick`  and `serverd:/bricks/brick-d2/brick` because it's a replica set
+
+To remove these brick, start the migration process (this migrates any data that needs to)
+
+```
+[root@servera ~]# gluster volume remove-brick myvol serverc:/bricks/brick-c2/brick serverd:/bricks/brick-d2/brick start
+volume remove-brick start: success
+ID: 687c1cd3-a35d-467c-a36b-12f0c0223b74
+```
+
+Check the status to make sure it's complete
+
+```
+[root@servera ~]# gluster volume remove-brick myvol serverc:/bricks/brick-c2/brick serverd:/bricks/brick-d2/brick status
+                                    Node Rebalanced-files          size       scanned      failures       skipped               status   run time in secs
+                               ---------      -----------   -----------   -----------   -----------   -----------         ------------     --------------
+                 serverc.lab.example.com               51         2.0KB            51             0             0            completed               3.00
+                 serverd.lab.example.com                0        0Bytes             0             0             0            completed               0.00
+```
+
+Once it's complete; you can commit the change
+
+```
+[root@servera ~]# gluster volume remove-brick myvol serverc:/bricks/brick-c2/brick serverd:/bricks/brick-d2/brick commit
+Removing brick(s) can result in data loss. Do you want to Continue? (y/n) y
+volume remove-brick commit: success
+Check the removed bricks to ensure all files are migrated.
+If files with data are found on the brick path, copy them via a gluster mount point before re-purposing the removed brick.
+```
+
+If you want (like the msg says)...make sure the bricks are empty
+
+```
+[root@servera ~]# ssh root@serverc -- ls -l /bricks/brick-c2/brick
+root@serverc's password:
+total 0
+
+[root@servera ~]# ssh root@serverd -- ls -l /bricks/brick-d2/brick
+root@serverd's password:
+total 0
 ```
