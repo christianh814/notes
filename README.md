@@ -19,4 +19,4 @@ These are my personal notes that I've collected over the years, documenting my e
 * [Linux Routing Notes](documents/linux_routing_notes.md)
 * [Apache Notes](documents/apache_notes.md)
 * [Varnish Notes](documents/varnish_notes.md)
-* [Centos DS Notes](centosds_notes.md)
+* [Centos DS Notes](documents/centosds_notes.md)
