@@ -12,6 +12,7 @@ These are glusterfs notes in no paticular order. Old 3.1 notes can be found [her
 * [Volume Options](#volume-options)
 * [ACLs And Quotas](#acls-and-quotas)
 * [Resizing Volumes](#resizing-volumes)
+* [Configuring IP Failover](#configuring-ip-failover)
 
 ## Installation
 
@@ -794,4 +795,114 @@ total 0
 [root@servera ~]# ssh root@serverd -- ls -l /bricks/brick-d2/brick
 root@serverd's password:
 total 0
+```
+## Configuring IP Failover
+
+When using Samba to export Gluster volumes, the Samba Clustered Trivial Database (CTDB) can be used to provide IP failover for Samba shares. This can be used to provide HA Samba shares.
+
+When using local user accounts, the local user databases can also be synced between nodes.
+
+First (on *all* gluster nodes); install the needed packages
+
+```
+yum -y install samba ctdb
+```
+
+Next (on *all* gluster nodes); setup the firewall to allow `samba` services and port `4379` over tcp
+
+```
+firewall-cmd --permanent --add-service=samba
+firewall-cmd --permanent --add-port=4379/tcp
+firewall-cmd --reload
+```
+
+Now, on one of the gluster node, stop the `ctdbmeta` volume
+
+```
+[root@servera ~]# gluster volume stop ctdbmeta
+```
+
+Next (on *all* gluster nodes); edit `/var/lib/glusterd/hooks/1/start/post/S29CTDBsetup.sh` and `/var/lib/glusterd/hooks/1/stop/pre/S29CTDB-teardown.sh`  so that the `META="all"` line becomes `META="ctdbmeta"`
+
+```
+grep 'META=' /var/lib/glusterd/hooks/1/start/post/S29CTDBsetup.sh
+META="ctdbmeta"
+
+grep 'META=' /var/lib/glusterd/hooks/1/stop/pre/S29CTDB-teardown.sh
+META="ctdbmeta"
+```
+
+Next (on *all* gluster nodes); edit the `/etc/samba/smb.conf` to include `clustering=yes` inside the `[global]` block
+
+```
+grep 'clustering' /etc/samba/smb.conf
+clustering=yes
+```
+
+Now, on one server, start the `ctdbmeta` volume
+
+```
+[root@servera ~]# gluster volume start ctdbmeta
+```
+
+Next (on *all* gluster nodes);  create the file `/etc/ctdb/nodes` with the IP addresses of all the gluster servers
+
+```
+cat /etc/ctdb/nodes
+172.25.250.10
+172.25.250.11
+```
+
+Next (on *all* gluster nodes);  create the file `/etc/ctdb/public_addresses` with the floating IP and interface you want it on.
+
+```
+cat /etc/ctdb/public_addresses
+172.25.250.15/24 eth0
+```
+
+Start and enable the ctdb service (ALL gluster nodes
+
+```
+systemctl enable ctdb
+systemctl start ctdb
+systemctl status ctdb
+```
+
+Now (on one server) create a samba user
+
+```
+[root@servera ~]# smbpasswd -a smbuser
+```
+
+Set the following options for the volume you want to export (again, on one server)
+
+```
+[root@servera ~]# gluster volume set custdata stat-prefetch off
+volume set: success
+[root@servera ~]# gluster volume set custdata server.allow-insecure on
+volume set: success
+[root@servera ~]# gluster volume set custdata storage.batch-fsync-delay-usec 0
+volume set: success
+```
+
+On ALL servers, add `option rpc-auth-allow-insecure on` to the `/etc/glusterfs/glusterd.vol` file, inside the `type mgmt` block, then restart `glusterd.service`
+
+```
+grep rpc-auth-allow-insecure /etc/glusterfs/glusterd.vol
+    option rpc-auth-allow-insecure on
+
+systemctl restart glusterd
+```
+
+Now restart the volume you're exporting (just one server)
+
+```
+yes | gluster volume stop custdata
+gluster volume start custdata
+```
+
+Try mounting it by putting it in your `/etc/fstab`
+
+```
+//172.25.250.15/gluster-custdata /mnt/custdata cifs user=smbuser,pass=redhat 0 0
 ```
