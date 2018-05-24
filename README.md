@@ -20,3 +20,4 @@ These are my personal notes that I've collected over the years, documenting my e
 * [Apache Notes](documents/apache_notes.md)
 * [Varnish Notes](documents/varnish_notes.md)
 * [Centos DS Notes](documents/centosds_notes.md)
+* [Let's Encrypt](documents/lets_enc.md)
