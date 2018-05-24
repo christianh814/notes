@@ -4,15 +4,19 @@ This  will show you how to set up a TLS/SSL certificate from [Let's Encrypt](htt
 
 SSL certificates are used within web servers to encrypt the traffic between server and client, providing extra security for users accessing your application. Let’s Encrypt provides an easy way to obtain and install trusted certificates for free.
 
+* [Certbot](#certbot)
+* [ACME Shell](#acme-shell)
+
+## Certbot
 For this purposes we will be using `feodra` and the certification automation tool called `certbot`
 
-Also `acme.sh` is available.
 
 * [Installation](#installation)
 * [Request Certificate](#request-certificate)
 * [Renewal](#renewal)
+* [OpenShift](#openshift)
 
-## Installation
+### Installation
 
 First, make sure the system is updated
 
@@ -83,7 +87,7 @@ More detailed help:
    apache, standalone, webroot, etc.)
 ```
 
-## Request Certificate
+### Request Certificate
 
 First; you need to allow `80` and `443` in your firewall config
 
@@ -107,7 +111,7 @@ Your certificates (along with a README) will be placed under:
 /etc/letsencrypt/live/<your domain>
 ```
 
-## Renewal
+### Renewal
 
 Let's Encrypt certs are temporary; you can cron the recreation with...
 
@@ -116,3 +120,25 @@ Let's Encrypt certs are temporary; you can cron the recreation with...
 ```
 
 Certs expire every 90 days or so...so I set it to run every other week. It's probably better to create a wrapper script for this (in case you need to do a "song and dance" like for OpenShift)
+
+### OpenShift
+
+
+If you're using LE for OpenShift, then create the proper symlinks
+
+```
+cd /etc/origin/master/named_certificates
+rm fullchain.pem
+rm privkey.pem
+ln -s /etc/letsencrypt/live/ocp.52.14.195.108.nip.io/fullchain.pem
+ln -s /etc/letsencrypt/live/ocp.52.14.195.108.nip.io/privkey.pem
+systemctl restart atomic-openshift-master
+```
+
+Look into cron-ing the renew/ocp-restart for the certs. I have examples [here](https://github.com/christianh814/openshift-toolbox/tree/master/certbot)
+
+You may want to look at [OpenShift ACME](https://github.com/tnozicka/openshift-acme) for certs for your router/applications
+
+## ACME Shell
+
+Coming Soon
