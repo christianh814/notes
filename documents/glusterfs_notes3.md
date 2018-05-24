@@ -13,6 +13,7 @@ These are glusterfs notes in no paticular order. Old 3.1 notes can be found [her
 * [ACLs And Quotas](#acls-and-quotas)
 * [Resizing Volumes](#resizing-volumes)
 * [Configuring IP Failover](#configuring-ip-failover)
+* [Configuring NFS Ganesha](#configuring-nfs-ganesha)
 
 ## Installation
 
@@ -905,4 +906,129 @@ Try mounting it by putting it in your `/etc/fstab`
 
 ```
 //172.25.250.15/gluster-custdata /mnt/custdata cifs user=smbuser,pass=redhat 0 0
+```
+## Configuring NFS Ganesha
+
+The built-in NFS server for Gluster Storage supports NFSv3. If NFSv4 or IP failover is needed, administrators should use NFS-Ganesha. Note that NFS-Ganesha cannot be run with the built-in NFSv3 server. NFSv3 should be disabled on all nodes that will be running NFS-Ganesha. 
+
+To get started; install the packages on ALL gluster servers by first stoping the `glusterd` service (here `serverX` stands for all servers)
+
+```
+[root@serverX ~]# systemctl stop glusterd
+[root@serverX ~]# yum install glusterfs-ganesha
+```
+
+Update the firewall rules on ALL servers
+
+```
+[root@serverX ~]# firewall-cmd --permanent --add-service=high-availability --add-service=nfs --add-service=rpc-bind --add-service=mountd
+[root@serverX ~]# firewall-cmd --reload
+```
+
+Now on just one server (here `servera` for example); copy over the sample `/etc/ganesha/ganesha-ha.conf.sample` file over to the right location.
+
+```
+[root@servera ~]# cp /etc/ganesha/ganesha-ha.conf.sample /etc/ganesha/ganesha-ha.conf
+```
+
+Update `/etc/ganesha/ganesha-ha.conf` with the following
+
+```
+HA_NAME="gls-ganesha"
+HA_VOL_SERVER="servera"
+HA_CLUSTER_NODES="servera.lab.example.com,serverb.lab.example.com"
+VIP_servera_lab_example_com="172.25.250.16"
+VIP_serverb_lab_example_com="172.25.250.17"
+```
+
+Now copy this config to all servers
+
+```
+[root@servera ~]# scp /etc/ganesha/ganesha-ha.conf serverX:/etc/ganesha/
+```
+
+On ALL servers, enable the proper clustering services
+
+```
+[root@serverX ~]# systemctl enable pacemaker pcsd
+```
+
+Start `pcsd` on ALL servers
+
+```
+[root@serverX ~]# systemctl start pcsd
+```
+
+On both your systems, set the password for the `hacluster` user
+
+```
+[root@serverX ~]# echo -n redhat | passwd --stdin hacluster
+```
+
+Now from one of your servers, authenticate `pcs` communication between all nodes. 
+
+```
+[root@servera ~]# pcs cluster auth -u hacluster -p redhat servera.lab.example.com serverb.lab.example.com
+```
+
+Create an ssh keypair on one of your servers and copy it over to all your other servers
+
+```
+[root@servera ~]# ssh-keygen -f /var/lib/glusterd/nfs/secret.pem -t rsa -N ''
+[root@servera ~]# scp /var/lib/glusterd/nfs/secret.pem* serverb:/var/lib/glusterd/nfs/
+[root@servera ~]# ssh-copy-id -i /var/lib/glusterd/nfs/secret.pem.pub root@servera
+[root@servera ~]# ssh-copy-id -i /var/lib/glusterd/nfs/secret.pem.pub root@serverb
+```
+
+Now start `glusterd` on ALL nodes
+
+```
+[root@serverX ~]# systemctl start glusterd
+```
+
+Next, you'll need to use Gluster's built-in shared clustered storage mechanism (only needs to be done on one server)
+
+```
+[root@servera ~]# gluster volume set all cluster.enable-shared-storage enable
+```
+
+On ALL servers, Configure nfs-ganesha to use the default port (20048/tcp/20048/UDP) for `mountd` in the `NFS_core_Param` in `/etc/ganesha/ganesha.conf`. IN the end the file should look like this
+
+```
+[root@serverX ~]# grep -A9 NFS_Core_Param /etc/ganesha/ganesha.conf
+NFS_Core_Param {
+        #Use supplied name other tha IP In NSM operations
+        NSM_Use_Caller_Name = true;
+        #Copy lock states into "/var/lib/nfs/ganesha" dir
+        Clustered = false;
+        #Use a non-privileged port for RQuota
+        Rquota_Port = 4501;
+        MNT_Port = 20048;
+}
+```
+
+Next, on one of the servers, enable `nfs-ganesha` and export `custdata`
+
+```
+[root@servera ~]# yes | gluster nfs-ganesha enable
+[root@servera ~]# gluster volume set custdata ganesha.enable on
+```
+
+From the client, verify that the `custdata` volume is exported over NFS using the Virtual IP
+
+```
+[student@workstation ~]$ showmount -e 172.25.250.16
+Export list for 172.25.250.16:
+/custdata (everyone)
+```
+
+Mount it if you wish
+
+```
+[root@workstation ~]# mkdir /mnt/nfs
+[root@workstation ~]# echo "172.25.250.16:/custdata     /mnt/nfs        nfs     rw,vers=4       0 0" >> /etc/fstab
+[root@workstation ~]# mount /mnt/nfs
+[root@workstation ~]# df -h /mnt/nfs/
+Filesystem               Size  Used Avail Use% Mounted on
+172.25.250.16:/custdata  2.0G   33M  2.0G   2% /mnt/nfs
 ```
