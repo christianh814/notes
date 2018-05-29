@@ -1046,3 +1046,109 @@ Before georeplication can be configured, a number of prerequisites must be met.
 Let's get started!
 
 First you need to enable shared storage for the `georeplication` daemon
+
+```
+[root@servera ~]# gluster volume set all cluster.enable-shared-storage enable
+volume set: success
+```
+
+Set up ssh-keys from the `root` account on the master to the `geoaccount` on the slave system.
+
+```
+[root@servera ~]# ssh-keygen -f ~/.ssh/id_rsa -N ''
+```
+
+Now, copy this id over
+
+```
+[root@servera ~]# ssh-copy-id -i ~/.ssh/id_rsa.pub geoaccount@servere
+```
+
+On the slave system, create a new dir called `/var/mountbroker-root`. This must be `0711` permission and have SELinux context equal to `/home` 
+
+```
+[root@servere ~]# mkdir -m 0711 /var/mountbroker-root
+[root@servere ~]# semanage fcontext -a -e /home /var/mountbroker-root
+[root@servere ~]# restorecon -vR /var/mountbroker-root
+restorecon reset /var/mountbroker-root context unconfined_u:object_r:var_t:s0->unconfined_u:object_r:home_root_t:s0
+```
+
+On the slave system, configure the following options; then restart `glusterd`
+
+* Set the `mountbroker-root` dir to `/var/mountbroker-root`
+* Set the mountbroker user for `slavevol` to `geoaccount`
+* Set `geo-replication-log-group` group to `geogroup`
+* Allow RPC connections
+
+```
+[root@servere ~]# gluster system:: execute mountbroker opt mountbroker-root /var/mountbroker-root
+Command executed successfully.
+
+[root@servere ~]# gluster system:: execute mountbroker user geoaccount slavevol
+Command executed successfully.
+
+[root@servere ~]# gluster system:: execute mountbroker opt geo-replication-log-group geogroup
+Command executed successfully.
+
+[root@servere ~]# gluster system:: execute mountbroker opt rpc-auth-allow-insecure on
+Command executed successfully.
+
+[root@servere ~]# systemctl restart  glusterd
+```
+
+Configure, and start, georeplication between the master and the slave, using the `geoaccount` account.
+
+On the master
+
+```
+[root@servera ~]# gluster system:: execute gsec_create
+Common secret pub file present at /var/lib/glusterd/geo-replication/common_secret.pem.pub
+
+[root@servera ~]# gluster volume geo-replication mastervol geoaccount@servere::slavevol create push-pem
+Creating geo-replication session between mastervol & geoaccount@servere::slavevol has been successful
+```
+
+Then on the slave
+
+```
+[root@servere ~]# /usr/libexec/glusterfs/set_geo_rep_pem_keys.sh geoaccount mastervol slavevol
+Successfully copied file.
+Command executed successfully.
+```
+
+Back on the master
+
+```
+[root@servera ~]# gluster volume geo-replication mastervol geoaccount@servere::slavevol config use_meta_volume true
+geo-replication config updated successfully
+
+[root@servera ~]# gluster volume geo-replication mastervol geoaccount@servere::slavevol start
+Starting geo-replication session between mastervol & geoaccount@servere::slavevol has been successful
+```
+
+On the master; verify that geo-rep is running
+
+```
+[root@servera ~]# gluster volume geo-replication status
+
+MASTER NODE                MASTER VOL    MASTER BRICK              SLAVE USER    SLAVE                                 SLAVE NODE    STATUS     CRAWL STATUS       LAST_SYNCED
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+servera.lab.example.com    mastervol     /bricks/brick-a1/brick    geoaccount    ssh://geoaccount@servere::slavevol    servere       Active     Changelog Crawl    2018-05-29 14:01:34
+serverb.lab.example.com    mastervol     /bricks/brick-b1/brick    geoaccount    ssh://geoaccount@servere::slavevol    servere       Passive    N/A                N/A
+```
+
+On the slave; check a brick to see the files being copied over
+
+```
+[root@servere ~]# ll /bricks/brick-e1/brick/ | head
+total 0
+-rw-r--r--. 2 root root 0 May 29 13:21 file00
+-rw-r--r--. 2 root root 0 May 29 13:21 file01
+-rw-r--r--. 2 root root 0 May 29 13:21 file02
+-rw-r--r--. 2 root root 0 May 29 13:21 file03
+-rw-r--r--. 2 root root 0 May 29 13:21 file04
+-rw-r--r--. 2 root root 0 May 29 13:21 file05
+-rw-r--r--. 2 root root 0 May 29 13:21 file06
+-rw-r--r--. 2 root root 0 May 29 13:21 file07
+-rw-r--r--. 2 root root 0 May 29 13:21 file08
+```
