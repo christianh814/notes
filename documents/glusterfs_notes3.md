@@ -1037,6 +1037,11 @@ Filesystem               Size  Used Avail Use% Mounted on
 
 Georeplication can be configured between volumes on the same host, or between a local volume, and a volume on a remote host. This can be connected using a LAN in the same data center, over a WAN, or even over the Internet. Georeplication can also be cascaded. A volume can be synced to more than one slave, and/or each of those slaves can then be synchronized to one or more slaves.
 
+* [Setup](#georeplication-setup)
+* [Management](#georeplication-management)
+
+### Georeplication Setup
+
 Before georeplication can be configured, a number of prerequisites must be met.
 
 * The master/slaves must be on the same version of Gluster.
@@ -1152,3 +1157,4 @@ total 0
 -rw-r--r--. 2 root root 0 May 29 13:21 file07
 -rw-r--r--. 2 root root 0 May 29 13:21 file08
 ```
+### Georeplication Management
