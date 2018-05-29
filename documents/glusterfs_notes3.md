@@ -14,6 +14,7 @@ These are glusterfs notes in no paticular order. Old 3.1 notes can be found [her
 * [Resizing Volumes](#resizing-volumes)
 * [Configuring IP Failover](#configuring-ip-failover)
 * [Configuring NFS Ganesha](#configuring-nfs-ganesha)
+* [Georeplication](#georeplication)
 
 ## Installation
 
@@ -1032,3 +1033,16 @@ Mount it if you wish
 Filesystem               Size  Used Avail Use% Mounted on
 172.25.250.16:/custdata  2.0G   33M  2.0G   2% /mnt/nfs
 ```
+## Georeplication
+
+Georeplication can be configured between volumes on the same host, or between a local volume, and a volume on a remote host. This can be connected using a LAN in the same data center, over a WAN, or even over the Internet. Georeplication can also be cascaded. A volume can be synced to more than one slave, and/or each of those slaves can then be synchronized to one or more slaves.
+
+Before georeplication can be configured, a number of prerequisites must be met.
+
+* The master/slaves must be on the same version of Gluster.
+* The slave can not be a peer of any of the nodes on the master system.
+* Passwordless SSH access is required between the root account on one of the nodes of the master volume, the node where the geo-replication create command will be run, and the account that will be used for georeplication on the slave node.
+
+Let's get started!
+
+First you need to enable shared storage for the `georeplication` daemon
