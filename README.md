@@ -2,6 +2,7 @@
 
 These are my personal notes that I've collected over the years, documenting my experences. They are in no paticular order and, at times, not complete. Feel free to use them but use at your own risk.
 
+* [OpenShift](https://github.com/christianh814/openshift-toolbox/blob/master/README.md#openshift-toolbox)
 * [GIT Notes](documents/git_notes.md)
 * [GlusterFS Notes](documents/glusterfs_notes.md)
 * [FirewallD Notes](documents/firewalld_notes.md)
@@ -23,4 +24,3 @@ These are my personal notes that I've collected over the years, documenting my e
 * [NFS Notes](documents/nfs_notes.md)
 * [Let's Encrypt](documents/lets_enc.md)
 * [Nginx Notes](documents/nginx)
-* [OpenShift](https://github.com/christianh814/openshift-toolbox/blob/master/README.md#openshift-toolbox)
