@@ -1158,3 +1158,83 @@ total 0
 -rw-r--r--. 2 root root 0 May 29 13:21 file08
 ```
 ### Georeplication Management
+
+Various options of a georeplication configuration can be modified. This includes settings for the location of log files, if deleted files should be deleted on the slave, and more.
+
+
+The following shows (for an example)
+
+* The changelog changed to be parsed every 5 seconds to see if any new changes need to be synchronized.
+* Files deleted on `mastervol` should not be deleted from `slavevol`.
+* A new checkpoint should be created, with the current date and time. 
+
+1. To change the changelog; first unmount the share from the client
+
+```
+[student@workstation ~]$ sudo umount /mnt/mastervol
+```
+
+Then you can set the rollover time on the master
+
+```
+[root@servera ~]# gluster volume  set mastervol changelog.rollover-time 5
+volume set: success
+```
+
+You can now remount the clients
+
+```
+[student@workstation ~]$ sudo mount /mnt/mastervol/
+[student@workstation ~]$ df -h /mnt/mastervol/
+Filesystem          Size  Used Avail Use% Mounted on
+servera:/mastervol  2.0G   33M  2.0G   2% /mnt/mastervol
+```
+2. To keep deleted files on the slave
+
+Set the `ignore-deletes` to `true` on the master
+
+```
+[root@servera ~]# gluster volume geo-replication mastervol geoaccount@servere::slavevol config ignore-deletes true
+geo-replication config updated successfully
+```
+
+Test it by removing a file on the client
+
+```
+[student@workstation ~]$ sudo rm -f /mnt/mastervol/importantfile
+[student@workstation ~]$ sudo ls -d /mnt/mastervol/importantfile
+ls: cannot access /mnt/mastervol/importantfile: No such file or directo
+```
+
+On the master, check the status of `LAST_SYNCED`
+
+```
+[root@servera ~]# gluster volume geo-replication status
+
+MASTER NODE                MASTER VOL    MASTER BRICK              SLAVE USER    SLAVE                                 SLAVE NODE    STATUS     CRAWL STATUS       LAST_SYNCED
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+servera.lab.example.com    mastervol     /bricks/brick-a1/brick    geoaccount    ssh://geoaccount@servere::slavevol    servere       Active     Changelog Crawl    2018-05-29 14:47:43
+serverb.lab.example.com    mastervol     /bricks/brick-b1/brick    geoaccount    ssh://geoaccount@servere::slavevol    servere       Passive    N/A                N/A
+```
+
+Once it's synced; verify the file is still there on the slave
+
+```
+[root@servere ~]# ls -ld /bricks/brick-e1/brick/importantfile
+-rw-r--r--. 2 root root 6 May 29 14:32 /bricks/brick-e1/brick/importantfile
+```
+
+3. To create a checkpoint for the geo-rep to start from
+
+You can set it to the keyword `now`, on the master
+
+```
+[root@servera ~]# gluster volume geo-replication mastervol geoaccount@servere::slavevol config checkpoint now
+geo-replication config updated successfully
+```
+
+Next, Verify that a checkpoint has been created (Inspect the `CHECKPOINT TIME` column). 
+
+```
+gluster volume geo-replication mastervol geoaccount@servere::slavevol status detail
+```
