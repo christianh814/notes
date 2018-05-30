@@ -27,3 +27,4 @@ These are my personal notes that I've collected over the years, documenting my e
 * [RHEL AD Authentication](documents/rh_ad_auth.md)
 * [KVM Notes](documents/kvm_notes.md)
 * [RHEV Notes](documents/rhev_notes.md)
+* [DNS Notes](documents/dns_notes.md)
