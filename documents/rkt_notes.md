@@ -25,7 +25,7 @@ Install `rkt` it's there in the default repos
 dnf -y install rkt golang-github-appc-spec
 ```
 
-Visit [[https://github.com/containers/build/releases|the release page]] and download the latest `acbuild` binaries. At the time of this writing it's 0.4.0
+Visit [this page](https://github.com/containers/build/releases) and download the latest `acbuild` binaries. At the time of this writing it's 0.4.0
 
 ```
 cd /usr/local/src/
