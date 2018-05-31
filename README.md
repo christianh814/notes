@@ -30,3 +30,4 @@ These are my personal notes that I've collected over the years, documenting my e
 * [DNS Notes](documents/dns_notes.md)
 * [Rocket Notes](documents/rkt_notes.md)
 * [Openstack](documents/openstack.md)
+* [HAProxy](documents/haproxy.md)
