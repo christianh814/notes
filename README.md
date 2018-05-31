@@ -29,3 +29,4 @@ These are my personal notes that I've collected over the years, documenting my e
 * [RHEV Notes](documents/rhev_notes.md)
 * [DNS Notes](documents/dns_notes.md)
 * [Rocket Notes](documents/rkt_notes.md)
+* [Openstack](documents/openstack.md)
