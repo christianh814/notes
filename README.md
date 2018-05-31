@@ -31,3 +31,4 @@ These are my personal notes that I've collected over the years, documenting my e
 * [Rocket Notes](documents/rkt_notes.md)
 * [Openstack](documents/openstack.md)
 * [HAProxy](documents/haproxy.md)
+* [Encrypted Volumes](documents/enc_vol.md)
