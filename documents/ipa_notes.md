@@ -1,7 +1,7 @@
 # IPA Notes
 
-Documentation found [HERE](https://docs.fedoraproject.org/en-US/)
-FreeIPA [Site](http://freeipa.org)
+* Documentation found [HERE](https://docs.fedoraproject.org/en-US/)
+* FreeIPA [Site](http://freeipa.org)
 
 ## Server Notes
 
