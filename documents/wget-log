@@ -1,0 +1,6 @@
+--2018-06-01 15:37:01--  https://dokuwiki-chx-ocp.1d35.starter-us-east-1.openshiftapps.com/lib/exe/fetch.php?cache=
+Resolving dokuwiki-chx-ocp.1d35.starter-us-east-1.openshiftapps.com (dokuwiki-chx-ocp.1d35.starter-us-east-1.openshiftapps.com)... 54.174.240.242, 54.174.137.226
+Connecting to dokuwiki-chx-ocp.1d35.starter-us-east-1.openshiftapps.com (dokuwiki-chx-ocp.1d35.starter-us-east-1.openshiftapps.com)|54.174.240.242|:443... connected.
+HTTP request sent, awaiting response... 400 Bad request
+2018-06-01 15:37:02 ERROR 400: Bad request.
+
