@@ -37,3 +37,4 @@ These are my personal notes that I've collected over the years, documenting my e
 * [TCP Wrappers](documents/tcp_wrappers.md)
 * [ISCI Notes](documents/iscsi.md)
 * [NTP Notes](documents/ntp_notes.md)
+* [Misc Notes](documents/scripting_notes.md)
