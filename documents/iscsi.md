@@ -318,7 +318,7 @@ Mount this target, remembering using the `_netdev` mount option in the `/etc/fst
 UUID=2b9b65ec-ffa9-4c9a-982f-cd1ade69706f /data/mount ext4 _netdev,defaults 0 0
 ```
 
-## With Multipathing
+## Multipathing
 
 This is assuming that you have 2 NICs to the ISCSI target
 
