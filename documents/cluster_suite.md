@@ -30,8 +30,8 @@ The following resources for this use case
 
 *  Shared iscsi storage
 
-If you need an iscsi how to click [here](iscsi_notes)\\
-If you need network bonding how to click [here](nic_bonding_notes)
+If you need an iscsi how to click [here](./iscsi.md)
+If you need network bonding how to click [here](./nic_bonding_notes.md)
 
 # Apache Web Cluster
 
@@ -40,7 +40,7 @@ Basic Web Cluster configuration
 ## Shared Storage
 
 
-After you've set up your [nic bonding](nic_bonding_notes) and have logged into the [iscsi initiator](iscsi_notes) - you'll need for format the device from one of the nodes.
+After you've set up your [nic bonding](./nic_bonding_notes.md) and have logged into the [iscsi initiator](./iscsi.md) - you'll need for format the device from one of the nodes.
 
 I didn't use LVM...I don't know if this will work with LVM so I just did it "raw" with FDSIK. Partition table should look like this
 
@@ -511,9 +511,9 @@ Notice that there is no longer a requirement for a "management" server. All node
 There are a few things we are assuming before we get started
 
  1.  DNS is set up properly
- 2.  Network Bond for the storage network (If you don't know look [HERE](nic_bonding_notes))
- 3.  You'll need shared storage (You can set up a NAS [HERE](iscsi_notes#server_configuration) if you need a QnD how to)
- 4.  You are registered with Red Hat to receive the proper channels (More info [HERE](rhn))
+ 2.  Network Bond for the storage network (If you don't know look [HERE](./nic_bonding_notes.md) )
+ 3.  You'll need shared storage (You can set up a NAS [HERE](./iscsi_notes.md#server_configuration) if you need a QnD how to)
+ 4.  You are registered with Red Hat to receive the proper channels (More info [HERE](./sub_mgt.md) )
 
 Install RHEL7 in a "minimal" configuration.
 
@@ -1035,8 +1035,8 @@ This will be a QnD way of setting up a cluster from the command-line. There will
 Make sure you have the following before you start
 
  1.  Proper DNS (forward and reverse)
- 2.  Network Bonding (notes [here](nic_bonding_notes) )
- 3.  You'll need shared storage (notes for a iscsi client/server setup [here](iscsi_notes))
+ 2.  Network Bonding (notes [here](./nic_bonding_notes.md) )
+ 3.  You'll need shared storage (notes for a iscsi client/server setup [here](./iscsi_notes.md))
  4.  If you're using RHEL, that you're subscribed to the proper channel.
  5.  Nodes installed in a "minimal" configuration
 
