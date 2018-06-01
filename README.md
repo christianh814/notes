@@ -41,5 +41,4 @@ These are my personal notes that I've collected over the years, documenting my e
 * [IPA Notes](documents/ipa_notes.md)
 * [GFS2 Notes](documents/gfs2.md)
 * [Subscription Management](documents/sub_mgt.md)
-* [Docker Quicknotes](documents/docker.md)
 * [Misc Notes](documents/scripting_notes.md)
