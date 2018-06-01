@@ -42,4 +42,5 @@ These are my personal notes that I've collected over the years, documenting my e
 * [GFS2 Notes](documents/gfs2.md)
 * [Subscription Management](documents/sub_mgt.md)
 * [Syslog Notes](documents/syslog.md)
+* [PHP](documents/php.md)
 * [Misc Notes](documents/scripting_notes.md)
