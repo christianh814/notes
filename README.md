@@ -43,4 +43,5 @@ These are my personal notes that I've collected over the years, documenting my e
 * [Subscription Management](documents/sub_mgt.md)
 * [Syslog Notes](documents/syslog.md)
 * [PHP](documents/php.md)
+* [XFS Quicknotes](documents/xfs.md)
 * [Misc Notes](documents/scripting_notes.md)
