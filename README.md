@@ -40,4 +40,5 @@ These are my personal notes that I've collected over the years, documenting my e
 * [Tmux Notes](documents/tmux.md)
 * [IPA Notes](documents/ipa_notes.md)
 * [GFS2 Notes](documents/gfs2.md)
+* [Subscription Management](documents/sub_mgt.md)
 * [Misc Notes](documents/scripting_notes.md)
