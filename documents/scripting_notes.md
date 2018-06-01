@@ -125,7 +125,8 @@ First, get file name without the path:
 ```
 filename=$(basename "$fullfile")
 extension="${filename##*.}"
-filename="${filename%.*}"</code>
+filename="${filename%.*}"
+```
 
 Alternatively, you can focus on the last '/' of the path instead of the '.' which should work even if you have unpredictable file extensions:
 ```
@@ -343,7 +344,7 @@ IpExt:
     InMcastOctets: 3187570
     OutMcastOctets: 5092
     InBcastOctets: 37182745
-    </code>
+```
     
 Pretty JSON output
 ```
@@ -403,15 +404,16 @@ do
 done
 echo "running $length and I'm doing it $execute times"
 ##
-##</code>
+##
+```
 
 Taring up "sparse" file (i.e. VM discs)
 
 ```
-# Sparse tar
+####### Sparse tar
 tar -cvzSpf fedora-unknown-1.qcow2.tgz fedora-unknown-1.qcow2
 
-# Sparse untar
+####### Sparse untar
 tar -xzSpf fedora-unknown-1.qcow2.tgz
 ```
 
