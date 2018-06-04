@@ -1,6 +1,6 @@
 # My personal notes
 
-These are my personal notes that I've collected over the years, documenting my experences. They are in no paticular order and, at times, not complete. Feel free to use them but use at your own risk.
+These are my personal notes that I've collected over the years, documenting my experences. They are in no paticular order and, at times, not complete. Feel free to use them but use at your own risk. (pull requests/corrections welcome!)
 
 * [OpenShift](https://github.com/christianh814/openshift-toolbox/blob/master/README.md#openshift-toolbox)
 * [GIT Notes](documents/git_notes.md)
