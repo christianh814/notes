@@ -1245,4 +1245,98 @@ gluster volume geo-replication mastervol geoaccount@servere::slavevol status det
 
 Here are some things you can check when something goes wrong
 
-*[Defective Bricks](defective-bricks)
+* [Defective Bricks](#defective-bricks)
+* [BitRot](#bitrot)
+
+### Defective Bricks
+
+When a brick has been offline, you will need to "heal" the volume. There are self heal mechanisms you can use. Also you can heal files that have gone into a "split brain" scenario
+
+For example, if `servera` went down; and you booted it back up; you can trigger a heal. First check the status on `serverb`
+
+```
+[root@serverb ~]# gluster volume heal replvol info
+Brick servera:/bricks/brick-a1/brick
+Status: Transport endpoint is not connected
+
+Brick serverb:/bricks/brick-b1/brick
+Number of entries: 0
+```
+
+After making sure `servera` is back online...
+
+```
+[root@servera ~]# gluster volume heal replvol info
+Brick servera:/bricks/brick-a1/brick
+Number of entries: 0
+
+Brick serverb:/bricks/brick-b1/brick
+Number of entries: 0
+```
+
+Make sure this says that it has no more files to heal
+
+
+You can replace a brick in `replvol` on `servera` with another brick. First check the info
+
+```
+[root@servera ~]# gluster volume info replvol
+
+Volume Name: replvol
+Type: Replicate
+Volume ID: c7f2848e-e588-4055-b45e-3de96936c17f
+Status: Started
+Number of Bricks: 1 x 2 = 2
+Transport-type: tcp
+Bricks:
+Brick1: servera:/bricks/brick-a1/brick
+Brick2: serverb:/bricks/brick-b1/brick
+Options Reconfigured:
+performance.readdir-ahead: on
+```
+
+Then, replace the brick
+
+```
+[root@servera ~]# gluster volume replace-brick replvol servera:/bricks/brick-a1/brick servera:/bricks/brick-a2/brick commit force
+```
+
+Verify that the brick has been replaced
+
+```
+[root@servera ~]# gluster volume info replvol
+
+Volume Name: replvol
+Type: Replicate
+Volume ID: c7f2848e-e588-4055-b45e-3de96936c17f
+Status: Started
+Number of Bricks: 1 x 2 = 2
+Transport-type: tcp
+Bricks:
+Brick1: servera:/bricks/brick-a2/brick
+Brick2: serverb:/bricks/brick-b1/brick
+Options Reconfigured:
+performance.readdir-ahead: on
+```
+### Bitrot
+
+In gluster; when BitRot Detection is enabled, all files on a volume will be scrubbed at regular intervals, and a checksum will be calculated/verified.
+
+
+To enable BitRot detection
+
+```
+[root@servera ~]# gluster volume bitrot replvol enable
+```
+
+Configure to scan all files once an hour
+
+```
+[root@servera ~]# gluster volume bitrot replvol scrub-frequency hourly
+```
+
+Set to scan the maximum number of files at once
+
+```
+[root@servera ~]# gluster volume bitrot replvol scrub-throttle aggressive
+```
