@@ -15,6 +15,7 @@ These are glusterfs notes in no paticular order. Old 3.1 notes can be found [her
 * [Configuring IP Failover](#configuring-ip-failover)
 * [Configuring NFS Ganesha](#configuring-nfs-ganesha)
 * [Georeplication](#georeplication)
+* [Basic Troubleshooting](#basic-troubleshooting)
 
 ## Installation
 
@@ -1033,6 +1034,7 @@ Mount it if you wish
 Filesystem               Size  Used Avail Use% Mounted on
 172.25.250.16:/custdata  2.0G   33M  2.0G   2% /mnt/nfs
 ```
+
 ## Georeplication
 
 Georeplication can be configured between volumes on the same host, or between a local volume, and a volume on a remote host. This can be connected using a LAN in the same data center, over a WAN, or even over the Internet. Georeplication can also be cascaded. A volume can be synced to more than one slave, and/or each of those slaves can then be synchronized to one or more slaves.
@@ -1238,3 +1240,9 @@ Next, Verify that a checkpoint has been created (Inspect the `CHECKPOINT TIME` c
 ```
 gluster volume geo-replication mastervol geoaccount@servere::slavevol status detail
 ```
+
+## Basic Troubleshooting
+
+Here are some things you can check when something goes wrong
+
+*[Defective Bricks](defective-bricks)
