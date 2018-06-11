@@ -1437,6 +1437,20 @@ do
 done
 ```
 
+Clone a snapshot with `gluster snapshot clone <clonename> <snapname>`
+
+```
+[root@serverc ~]# gluster snapshot clone otters elephants
+snapshot clone: success: Clone otters created successfully
+```
+
+Just like any volume; you need to start this to use it
+
+```
+[root@serverc ~]# gluster volume start otters
+volume start: otters: success
+```
+
 ### Scheduling Snapshots
 
 Configure `snap-max-hard-limit` and `snap-max-soft-limit` to comply with the limits of maximum ten snapshots, and automatic deletion after five snapshots.
