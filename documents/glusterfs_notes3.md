@@ -16,6 +16,7 @@ These are glusterfs notes in no paticular order. Old 3.1 notes can be found [her
 * [Configuring NFS Ganesha](#configuring-nfs-ganesha)
 * [Georeplication](#georeplication)
 * [Basic Troubleshooting](#basic-troubleshooting)
+* [Snapshots](#snapshots)
 
 ## Installation
 
@@ -1339,4 +1340,192 @@ Set to scan the maximum number of files at once
 
 ```
 [root@servera ~]# gluster volume bitrot replvol scrub-throttle aggressive
+```
+
+## Snapshots
+
+Gluster lets you create snapshots of volumes; read-only, point-in-time representations of data. Gluster leverages LVM snapshots of the bricks that make up the volume, ergo, thinly provisioned LVM must be used to create all bricks if you want to use snapshots.
+
+* [Managing Snapshots](#managing-snapshots)
+* [Scheduling Snapshots](#scheduling-snapshots)
+
+### Managing Snapshots
+
+To create a snapshot, use the syntax `gluster snapshot create <name of snapshot> <name of volume> <options>` (note that I used `no-timestamp` option. This means that it doesn't add a timestamp as part of the snapshot name)
+
+```
+[root@servera ~]# gluster snapshot create safetysnap snapvol no-timestamp
+snapshot create: success: Snap safetysnap created successfully
+```
+
+Get information about the snapshot
+
+```
+[root@servera ~]# gluster snapshot info safetysnap
+Snapshot                  : safetysnap
+Snap UUID                 : e5c9ea58-26c9-4fda-aa0c-c331fccc2785
+Created                   : 2018-06-11 22:16:52
+Snap Volumes:
+
+	Snap Volume Name          : 23196fd7bb104005b1aa9b76b7ccf617
+	Origin Volume name        : snapvol
+	Snaps taken for snapvol      : 2
+	Snaps available for snapvol  : 254
+	Status                    : Stopped
+```
+
+List current snapshots
+
+```
+[root@servera ~]# gluster snapshot list
+original
+safetysnap
+```
+
+To create user serviceable snapshots (i.e. the `.snap` dir); first umount any clients
+
+```
+[student@workstation ~]$ sudo umount /mnt/snapvol/
+```
+
+Then set the option
+
+```
+[root@servera ~]# gluster volume set snapvol features.uss enable
+volume set: success
+```
+
+Snapshots need to be activated before they can be mounted
+
+```
+[root@servera ~]# gluster snapshot activate original
+Snapshot activate: original: Snap activated successfully
+
+[root@servera ~]# gluster snapshot activate safetysnap
+Snapshot activate: safetysnap: Snap activated successfully
+```
+
+Verify that uss snaps are available on the client
+
+```
+[student@workstation ~]$ ll /mnt/snapvol/.snaps
+total 0
+d---------. 0 root root 0 Dec 31  1969 original
+d---------. 0 root root 0 Dec 31  1969 safetysnap
+```
+
+To persistantly mount the snapshot
+
+```
+[student@workstation ~]$ sudo mkdir /mnt/original
+
+[student@workstation ~]$ sudo grep original /etc/fstab
+servera:/snaps/original/snapvol /mnt/original glusterfs _netdev 0 0
+
+[student@workstation ~]$ sudo mount -a
+
+[student@workstation ~]$ cat /mnt/original/file00
+This file is original
+```
+
+Restore the files file02, file04, file08, and file16 from the original snapshot to the snapvol volume. 
+
+```
+[root@workstation ~]# for FILE in /mnt/original/file{02,04,08,16}
+do
+  cp ${FILE} /mnt/snapvol/
+done
+```
+
+### Scheduling Snapshots
+
+Configure `snap-max-hard-limit` and `snap-max-soft-limit` to comply with the limits of maximum ten snapshots, and automatic deletion after five snapshots.
+
+```
+[root@servera ~]# gluster snapshot config snap-max-hard-limit 10 snap-max-soft-limit 50
+Changing snapshot-max-hard-limit will limit the creation of new snapshots if they exceed the new snapshot-max-hard-limit.
+If Auto-delete is enabled, snap-max-soft-limit will trigger deletion of oldest snapshot, on the creation of new snapshot, when the snap-max-soft-limit is reached.
+Do you want to continue? (y/n) y
+snapshot config: snap-max-hard-limit & snap-max-soft-limit for system set successfully
+```
+
+Verify with `gluster snapshot config`
+
+```
+[root@servera ~]# gluster snapshot config
+
+Snapshot System Configuration:
+snap-max-hard-limit : 10
+snap-max-soft-limit : 50%
+auto-delete : disable
+activate-on-create : disable
+
+Snapshot Volume Configuration:
+
+Volume : snapvol
+snap-max-hard-limit : 256
+Effective snap-max-hard-limit : 10
+Effective snap-max-soft-limit : 5 (50%)
+```
+
+To enable automatic deletion of snapshots when `snap-max-soft-limit` is exceeded
+
+```
+[root@servera ~]# gluster snapshot config auto-delete on
+snapshot config: auto-delete successfully set
+```
+
+To enable automatic activation of new snapshots.
+
+```
+[root@servera ~]# gluster snapshot config activate-on-create enable
+snapshot config: activate-on-create successfully set
+```
+
+Prepare ALL servers in your cluster for snapshot scheduling
+
+```
+[root@servera ~]# gluster volume set all cluster.enable-shared-storage enable
+volume set: success
+
+[root@serverX ~]# setsebool -P cron_system_cronjob_use_shares 1
+```
+
+Initialize snapshot scheduler
+
+```
+[root@serverX ~]# snap_scheduler.py init
+snap_scheduler: Successfully initialised snapshot scheduler for this node
+```
+
+On ONE of the servers, enable the scheduler
+
+```
+[root@servera ~]# snap_scheduler.py enable
+snap_scheduler: Snapshot scheduling is enabled
+```
+
+Create a new schedule named `serentiy` that takes a snap every two minutes on `snapvol`
+
+```
+[root@servera ~]# snap_scheduler.py add serentiy "*/2 * * * *" snapvol
+snap_scheduler: Successfully added snapshot schedule
+```
+
+To list current schedules
+
+```
+[root@servera ~]# snap_scheduler.py list
+JOB_NAME         SCHEDULE         OPERATION        VOLUME NAME
+--------------------------------------------------------------------
+serentiy         */2 * * * *      Snapshot Create  snapvol
+```
+
+List snapshots
+
+```
+[root@servera ~]# gluster snapshot list
+original
+safetysnap
+Scheduled-serentiy-snapvol_GMT-2018.06.11-22.52.02
 ```
