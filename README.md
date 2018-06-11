@@ -4,7 +4,7 @@ These are my personal notes that I've collected over the years, documenting my e
 
 * [OpenShift](https://github.com/christianh814/openshift-toolbox/blob/master/README.md#openshift-toolbox)
 * [GIT Notes](documents/git_notes.md)
-* [GlusterFS Notes](documents/glusterfs_notes.md)
+* [GlusterFS Notes](documents/glusterfs_notes3.md)
 * [FirewallD Notes](documents/firewalld_notes.md)
 * [SystemD Notes](documents/systemd_notes.md)
 * [NIC Bonding Notes](documents/nic_bonding_notes.md)
