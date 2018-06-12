@@ -103,6 +103,7 @@ do
   reposync --gpgcheck -lm --repoid=${repo} --download_path=/path/to/repos
   createrepo -v </path/to/repos/>${repo} -o </path/to/repos/>${repo}
 done</code>
+```
 
 If this is in an apache webserver you can host your own repo by creating `/etc/yum.repos.d/myrepo.repo` file with the following contents on the client
 ```
