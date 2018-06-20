@@ -17,6 +17,7 @@ These are glusterfs notes in no paticular order. Old 3.1 notes can be found [her
 * [Georeplication](#georeplication)
 * [Basic Troubleshooting](#basic-troubleshooting)
 * [Snapshots](#snapshots)
+* [Gluster Console](#gluster-console)
 
 ## Installation
 
@@ -1543,3 +1544,47 @@ original
 safetysnap
 Scheduled-serentiy-snapvol_GMT-2018.06.11-22.52.02
 ```
+## Gluster Console
+
+The Gluster Console is a webui interface that can be used to manage an existing Gluster installation.
+
+To install, run `yum` and specify the `rhsc` package.
+
+```
+[root@manager ~]# yum -y install rhsc
+```
+
+Next, run the `rhsc-setup` command
+
+```
+[root@manager ~]# rhsc-setup
+```
+
+This will go through a "wizard". Here is an overview of what I selected
+
+```
+--== CONFIGURATION PREVIEW ==--
+
+          Application mode                        : gluster
+          Firewall manager                        : iptables
+          Update Firewall                         : True
+          Host FQDN                               : manager.lab.example.com
+          Engine database name                    : engine
+          Engine database secured connection      : False
+          Engine database host                    : localhost
+          Engine database user name               : engine
+          Engine database host name validation    : False
+          Engine database port                    : 5432
+          Engine installation                     : True
+          PKI organization                        : lab.example.com
+          Configure local Engine database         : True
+          Set application as default page         : True
+          Configure Apache SSL                    : True
+          Nagios monitoring enabled for gluster hosts: True
+```
+
+Next...
+
+* Open a browser navigate to the host's URL, click `admin portal` to log in, and click `I Understand the Risks, Add Exception, and Confirm Security Exception` to accept the SSL cert. Log in using the user `admin` with the password you specified.
+* Navigate to the `Clusters` tab, and click the `New` button. A pop-up titled `New Cluster` will appear. Enter `gluster-cluster` as a name, add a description, and the  information about your Gluster Storage environment and click `OK`. 
+* In the next screen, select `Use a common password`, enter the password and click `Apply`, then click `OK`. Navigate to the `Hosts` tab, and when all hosts display an Up status, browse through all tabs and check the details of your Gluster Storage elements. 
