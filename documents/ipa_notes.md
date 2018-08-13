@@ -859,6 +859,25 @@ dig @localhost example.com axfr
 
 This allows you to see the "raw" dns zonefile
 
+__Backup and Restore__
+
+Full backup with
+
+```
+root@ipa1# TMPDIR=/path/to/backup ipa-backup
+```
+
+To restore this backup
+
+```
+root@ipa1# ipa-restore /path/to/backup
+```
+
+NOTE: Restoring from backup sets the restored server as the new data master, and you will be required to reinitialize all other masters after the restore. To reinitialize the other masters, run the `ipa-replica-manage` command.
+
+```
+root@ipa2# ipa-replica-manage re-initialize --from=ipa1.example.com
+```
 
 ## IPA Setup for GOGS
 
