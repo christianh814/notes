@@ -861,10 +861,10 @@ This allows you to see the "raw" dns zonefile
 
 __Backup and Restore__
 
-Full backup with
+Full backup with (stores it in `/var/lib/ipa/backup/`)
 
 ```
-root@ipa1# TMPDIR=/path/to/backup ipa-backup
+root@ipa1# ipa-backup
 ```
 
 To restore this backup
