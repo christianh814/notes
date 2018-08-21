@@ -358,7 +358,7 @@ ipa1.la3.4over.com: master
 ipa1.gln.4over.com: master
 ```
 
-## Update 4.5.4
+## Update Replicas 4.5.4
 
 The process has changed...see [here](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/linux_domain_identity_authentication_and_policy_guide/creating-the-replica)
 
@@ -369,7 +369,7 @@ root@ipa2# yum -y install ipa-server ipa-server-dns
 root@ipa2# ipa-client-install --force-ntpd
 ```
 
-Then "promote" it as a replica/server
+Then "promote" it as a replica/server (make sure the forward/reverse dns for the host is in place)
 
 ```
 root@ipa2# ipa-replica-install --setup-dns --setup-ca --forwarder 8.8.8.8 --forwarder 8.8.4.4
