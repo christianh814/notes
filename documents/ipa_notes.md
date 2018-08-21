@@ -384,6 +384,9 @@ ipa1.cloud.chx: master
 [root@ipa1 ~]#  ipa-replica-manage list ipa1.cloud.chx
 ipa2.cloud.chx: replica
 ```
+## Topologies in 4.5.4
+
+More info can be found [here](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/linux_domain_identity_authentication_and_policy_guide/managing-topology)
 
 Find your domain/ca topology
 
