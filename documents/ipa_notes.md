@@ -357,6 +357,76 @@ root@server# ipa-replica-manage list
 ipa1.la3.4over.com: master
 ipa1.gln.4over.com: master
 ```
+
+## Update 4.5.4
+
+The process has changed...see [here](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/linux_domain_identity_authentication_and_policy_guide/creating-the-replica)
+
+First set up the server as a client
+
+```
+root@ipa2# yum -y install ipa-server ipa-server-dns
+root@ipa2# ipa-client-install --force-ntpd
+```
+
+Then "promote" it as a replica/server
+
+```
+root@ipa2# ipa-replica-install --setup-dns --setup-ca --forwarder 8.8.8.8 --forwarder 8.8.4.4
+```
+
+You should be able to see it now
+
+```
+[root@ipa1 ~]#  ipa-replica-manage list
+ipa2.cloud.chx: master
+ipa1.cloud.chx: master
+[root@ipa1 ~]#  ipa-replica-manage list ipa1.cloud.chx
+ipa2.cloud.chx: replica
+```
+
+Find your domain/ca topology
+
+```
+[root@ipa1 ~]# ipa topologysegment-find domain
+-----------------
+1 segment matched
+-----------------
+  Segment name: ipa1.cloud.chx-to-ipa2.cloud.chx
+  Left node: ipa1.cloud.chx
+  Right node: ipa2.cloud.chx
+  Connectivity: both
+----------------------------
+Number of entries returned 1
+----------------------------
+[root@ipa1 ~]# ipa topologysegment-find ca
+-----------------
+1 segment matched
+-----------------
+  Segment name: ipa1.cloud.chx-to-ipa2.cloud.chx
+  Left node: ipa1.cloud.chx
+  Right node: ipa2.cloud.chx
+  Connectivity: both
+----------------------------
+Number of entries returned 1
+----------------------------
+```
+
+Show specific topologies
+
+```
+[root@ipa1 ~]# ipa topologysegment-show domain ipa1.cloud.chx-to-ipa2.cloud.chx
+  Segment name: ipa1.cloud.chx-to-ipa2.cloud.chx
+  Left node: ipa1.cloud.chx
+  Right node: ipa2.cloud.chx
+  Connectivity: both
+[root@ipa1 ~]# ipa topologysegment-show ca ipa1.cloud.chx-to-ipa2.cloud.chx
+  Segment name: ipa1.cloud.chx-to-ipa2.cloud.chx
+  Left node: ipa1.cloud.chx
+  Right node: ipa2.cloud.chx
+  Connectivity: both
+```
+
 __Failover__
 
 Failover is done by DNS...you add both of your servers as a SRV record. This is done at the application level. The clients/servers querey DNS for it's next available server.
