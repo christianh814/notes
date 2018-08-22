@@ -155,34 +155,32 @@ Another (better?) way?
 Sample “Standard” Virtual Host Entry
 
 ```
-  <VirtualHost 192.168.11.146:80 69.237.62.146:80>
-    ServerAdmin donw@4over.com
-    DocumentRoot /data/pro_4over/www
-    ServerName pro.4over.com
-    ErrorLog /var/apache/logs/pro.4over.com-error_log
-    CustomLog /var/apache/logs/pro.4over.com-access_log common
-    ScriptAlias /cgi-bin/ "/data/pro_4over/cgi-bin/"
-  </VirtualHost>
+<VirtualHost *:80>
+    ServerAdmin webmaster@dummy-host.example.com
+    DocumentRoot "/exports/repos"
+    ServerName virt0
+    ServerAlias virt0.cloud.chx
+    ErrorLog "logs/virt0-error_log"
+    CustomLog "logs/virt0-access_log" common
+</VirtualHost>
 ```
 
 Sample Virtual Host Entry With Directory Access
 
 ```
-  <VirtualHost 192.168.11.146:80 69.237.62.146:80>
-  <Directory /data/pro_4over/www>
-    Options FollowSymLinks
+<VirtualHost *:80>
+  <Directory "/exports/repos">
+    Options Indexes FollowSymLinks
     AllowOverride None
-    Order deny,allow
-    Allow from all
-    Deny from all
+    Require all granted
   </Directory>
-    ServerAdmin donw@4over.com
-    DocumentRoot /data/pro_4over/www
-    ServerName pro.4over.com
-    ErrorLog /var/apache/logs/pro.4over.com-error_log
-    CustomLog /var/apache/logs/pro.4over.com-access_log common
-    ScriptAlias /cgi-bin/ "/data/pro_4over/cgi-bin/"
-  </VirtualHost>
+    ServerAdmin webmaster@dummy-host.example.com
+    DocumentRoot "/exports/repos"
+    ServerName virt0
+    ServerAlias virt0.cloud.chx
+    ErrorLog "logs/virt0-error_log"
+    CustomLog "logs/virt0-access_log" common
+</VirtualHost>
 ```
 Sample Virtual Host Entry With Directory Access (CGI-BIN)
 
