@@ -17,6 +17,35 @@ Red Hat Hyperconverged Infrastructure (RHHI) combines compute, storage, networki
 
 ![rhhi](images/rhhi.png)
 
+The prereqs are as follows:
+
+* 3 Servers able to do virt
+* Each server must have at LEAST 2 NICs (one for vm network and one for storage network)
+* Each server must have at LEAST 2 Hard Drives (one for the Hypervisor OS and the other for Gluster)
+* 12 Core CPU
+* 64GB of RAM
+
+The following steps will get you up and running.
+
+* [Prepare The Hosts](##prepare-the-hosts)
+
+## Prepare the Hosts
+
+I installed `RHEL 7.4` on each one of my hosts with the following repos enabled
+
+```
+[root@hyperX ~]# yum repolist
+Loaded plugins: enabled_repos_upload, package_upload, product-id, search-disabled-repos, subscription-manager, vdsmupgrade
+repo id                                                                             repo name                                                                          status
+!rh-gluster-3-for-rhel-7-server-rpms                                                rh-gluster-3-for-rhel-7-server-rpms                                                   884
+!rhel-7-server-ansible-2-rpms                                                       rhel-7-server-ansible-2-rpms                                                           33
+!rhel-7-server-rhv-4-mgmt-agent-rpms                                                rhel-7-server-rhv-4-mgmt-agent-rpms                                                 1,391
+!rhel-7-server-rhv-4.2-manager-rpms                                                 rhel-7-server-rhv-4.2-manager-rpms                                                    471
+!rhel-7-server-rpms                                                                 rhel-7-server-rpms                                                                 20,920
+repolist: 23,699
+
+```
+
 
 ## Create RHEL Template
 
