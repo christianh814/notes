@@ -29,6 +29,7 @@ The following steps will get you up and running.
 
 * [Prepare The Hosts](#prepare-the-hosts)
 * [Deploy Gluster Storage](#deploy-gluster-storage)
+* [Deploy SelfHosted Engine](#deploy-selfhosted-engine)
 
 ### Prepare the Hosts
 
@@ -77,7 +78,65 @@ I verify with a similar loop (note that I do the same for the storage network as
 ```
 ### Deploy Gluster Storage
 
-Browse to the Cockpit management interface of the first virtualization host, for example `https://hyper1.example.com:9090/` and log in as `root`
+Browse to the Cockpit management interface of the first virtualization host, for example `https://hyper1.example.com:9090/`, and log in as `root`
+
+
+Start the deployment wizard by clicking `Virtualization > Hosted Engine`, and select `Hosted Engine with Gluster`, and click `Start`.
+
+![rhhi-gluster-pic1](images/rhhi-deploy-gluster-select.png)
+
+
+In the deployment wizard specify storage hosts. Remember Specify the **back-end gluster network addresses** (**__not__** the vm network addresses) of the three virtualization hosts. The host that can SSH using key pairs should be listed first. Click `Next`
+
+![rhhi-gluster-pic2](images/rhhi-he-gluster-wizard-hosts.png)
+
+On the next page; leave it blank and click `Next`
+
+![rhhi-gluster-pic3](images/rhhi-he-wizard-packages.png)
+
+Next specify the volumes to be created. The default settings should be fine.
+
+![rhhi-gluster-pic4](images/rhhi-he-wizard-volumes.png)
+
+
+Next, it'll ask you to specify the bricks and what the backing RAID system is. If you're using "standalone" disks (i.e. a single disk) just chose `JBOD`. The defaults should be fine after that. Just verify that the device name is right. Here it's `sdb` referencing `/dev/sdb`. (you may want to verify that on each host by doing `fdisk -l`). Again, the defaults were fine for me.
+
+![rhhi-gluster-pic5](images/rhhi-he-wizard-bricks.png)
+
+Now you have a chance to edit the `gdeploy` config it creates. I didn't have to but you can if you need/want to. Click `Deploy` when you're ready
+
+![rhhi-gluster-pic6](images/rhhi-he-wizard-review-deploy.png)
+
+You should see this screen when it has finished.
+
+![rhhi-gluster-pic6](images/rhhi-he-gluster-success.png)
+
+Click on "Continue to Hosted Engine Deployment" when ready
+
+### Deploy SelfHosted Engine
+
+After finishing deploying gluster; you're presented with a screen when you click "Continue to Hosted Engine Deployment" that says:
+
+```
+Continuing will configure this host for serving as hypervisor
+and create a VM where you have to install the engine afterwards.
+Are you sure you want to continue?
+```
+
+Agree by typing `Yes` in the provided box.
+
+**NOTE**: I like to run `yum -y install ovirt-hosted-engine-setup` on the host I'm running this one before this step to speed up the installation.
+
+Once you've agreed; it'll ask you questions that you should be able to figure out (like ip address of the engine and storage backend). Here is a review page for reference
+
+![rhhi-ovirt-pic1](images/uarwo41-config-preview.png)
+
+If you need help consult the [documentation page](https://access.redhat.com/documentation/en-us/red_hat_hyperconverged_infrastructure/1.0/html/deploying_red_hat_hyperconverged_infrastructure/) or [this blog](https://www.ovirt.org/blog/2017/04/up-and-running-with-ovirt-4.1-and-gluster-storage/)
+
+The install can take a while but when it's done you'll see this page
+
+![rhhi-ovirt-pic2](images/uarwo41-he-complete.png)
+
 
 ## Create RHEL Template
 
