@@ -2,6 +2,7 @@
 
 RHEV Is Red Hat's Virtualization platform. It's comparable to VMWare.
 
+* [Red Hat Hyperconverged Infrastructure](#rhhi-notes)
 * [Create RHEL Template](#create-rhel-template)
 * [P2V Migration](#p2v-migration)
 * [Manual P2V](#manual-p2v)
@@ -9,6 +10,13 @@ RHEV Is Red Hat's Virtualization platform. It's comparable to VMWare.
 * [Misc RHEVM Notes](#misc-rhevm-notes)
 * [RHEVM REST API](#rhevm-rest-api)
 * [Dell iDrac Info](#dell-idrac-info)
+
+## RHHI Notes
+
+Red Hat Hyperconverged Infrastructure (RHHI) combines compute, storage, networking, and management capabilities in one deployment. In short this makes it to where the Hypervisors are actually running the storage as well. The design looks like this.
+
+![rhhi](images/rhhi.png)
+
 
 ## Create RHEL Template
 
