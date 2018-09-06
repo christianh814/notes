@@ -28,10 +28,11 @@ The prereqs are as follows:
 The following steps will get you up and running.
 
 * [Prepare The Hosts](#prepare-the-hosts)
+* [Deploy Gluster Storage](#deploy-gluster-storage)
 
-## Prepare the Hosts
+### Prepare the Hosts
 
-I installed `RHEL 7.4` on each one of my hosts with the following repos enabled
+I installed `RHEL 7.4` on each one of my hosts with the following repos enabled (ALSO: Make sure that your two nics are connected to their respective networks.)
 
 ```
 [root@hyperX ~]# yum repolist
@@ -46,6 +47,37 @@ repolist: 23,699
 
 ```
 
+
+After that I installed the following packages on all servers
+
+```
+[root@hyperX ~]# yum -y install glusterfs-server glusterfs-fuse cockpit-bridge cockpit-ovirt-dashboard
+```
+
+
+Next I opened the cockpit ports on all servers
+
+```
+[root@hyperX ~]# firewall-cmd --permanent --add-service=cockpit
+[root@hyperX ~]# firewall-cmd --reload
+```
+
+Now from the "main" server (it doesn't matter which one...I'll use the first one but you can use any one); create and distribute the sshkeys (even to itself).
+
+```
+[root@hyper1 ~]# ssh-keygen
+[root@hyper1 ~]# for i in {1..3}; do ssh-copy-id hyper$i.cloud.chx ; done
+```
+
+I verify with a similar loop (note that I do the same for the storage network as well)
+
+```
+[root@hyper1 ~]# for i in {1..3}; do ssh hyper$i.cloud.chx hostname ; done
+[root@hyper1 ~]# for i in {1..3}; do ssh-copy-id 172.31.254.25$i ; done
+```
+### Deploy Gluster Storage
+
+Browse to the Cockpit management interface of the first virtualization host, for example `https://hyper1.example.com:9090/` and log in as `root`
 
 ## Create RHEL Template
 
