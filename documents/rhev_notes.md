@@ -30,6 +30,8 @@ The following steps will get you up and running.
 * [Prepare The Hosts](#prepare-the-hosts)
 * [Deploy Gluster Storage](#deploy-gluster-storage)
 * [Deploy SelfHosted Engine](#deploy-selfhosted-engine)
+* [Configure Storge for RHEV](#configure-storge-for-rhev)
+* [Configure Hypervisors for RHEV](#configure-hypervisors-for-rhev)
 
 ### Prepare the Hosts
 
@@ -137,6 +139,81 @@ The install can take a while but when it's done you'll see this page
 
 ![rhhi-ovirt-pic2](images/uarwo41-he-complete.png)
 
+
+### Configure Storge for RHEV
+
+Follow these steps to confgure the storage domain for your RHEV cluster.
+
+
+First Create your storage network
+
+* Log in to the engine (example `https://rhevm.example.com`)
+
+* Browse to the engine and log in using the administrative credentials you configured when you deployed the Hosted Engine using the Cockpit UI.
+
+* Create a logical network for gluster traffic
+  * Click the Networks tab and then click New. The New Logical Network wizard appears.
+  * On the General tab of the wizard, provide a Name for the new logical network, and uncheck the VM Network checkbox.
+  * On the Cluster tab of the wizard, uncheck the Required checkbox.
+  * Click OK to create the new logical network.
+
+* Enable the new logical network for gluster
+    * Click the Networks tab and select the new logical network.
+    * Click the Clusters sub-tab and then click Manage Network. The Manage Network dialogue appears.
+    * In the Manage Network dialogue, check the Migration Network and Gluster Network checkboxes.
+    * Click OK to save.
+
+* Attach the gluster network to the host
+    * Click the Hosts tab and select the host.
+    * Click the Network Interfaces subtab and then click Setup Host Networks.
+    * Drag and drop the newly created network to the correct interface.
+    * Ensure that the Verify connectivity checkbox is checked.
+    * Ensure that the Save network configuration checkbox is checked.
+    * Click OK to save.
+
+* Verify the health of the network
+
+* Click the Hosts tab and select the host. Click the Networks subtab and check the state of the host’s network.
+
+Next create a master domain for storage
+
+* Click the Storage tab and then click New Domain.
+* Select GlusterFS as the Storage Type and provide a Name for the domain.
+
+* Check the Use managed gluster volume option.
+
+* A list of volumes available in the cluster appears.
+
+* Select the vmstore volume and add the following to the Mount Options (use your storage network addresses separated by `:`)
+
+```
+backup-volfile-servers=172.31.254.21:172.31.254.22
+```
+
+* Click OK to save.
+
+### Configure Hypervisors for RHEV
+
+Follow these steps in Red Hat Virtualization Manager for each of the other hosts.
+
+* Click the Hosts tab and then click New to open the New Host dialog.
+* Provide a Name, Address, and Password for the new host.
+* Uncheck the Automatically configure host firewall checkbox, as firewall rules are already configured by gdeploy.
+* In the Hosted Engine tab of the New Host dialog, set the value of Choose hosted engine deployment action to deploy.
+* Click Deploy.
+* Attach the gluster network to the host
+  * Click the Hosts tab and select the host.
+  * Click the Network Interfaces subtab and then click Setup Host Networks.
+  * Drag and drop the newly created network to the correct interface.
+  * Ensure that the Verify connectivity checkbox is checked.
+  * Ensure that the Save network configuration checkbox is checked.
+  * Click OK to save.
+* In the General subtab for this host, verify that the value of Hosted Engine HA is Active, with a positive integer as a score.
+* Verify the health of the network
+  * Click the Hosts tab and select the host. Click the Networks subtab and check the state of the host’s network.
+
+
+**NOTE** If the network interface enters an "Out of sync" state or does not have an IPv4 Address, click the Management tab that corresponds to the host and click Refresh Capabilities.
 
 ## Create RHEL Template
 
