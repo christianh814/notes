@@ -27,7 +27,7 @@ The prereqs are as follows:
 
 The following steps will get you up and running.
 
-* [Prepare The Hosts](##prepare-the-hosts)
+* [Prepare The Hosts](#prepare-the-hosts)
 
 ## Prepare the Hosts
 
