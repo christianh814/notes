@@ -4,6 +4,7 @@ These are ssh notes in no paticular order
 
 * [Passwordless SSH Login](#passwordless-ssh-login)
 * [SSH Tunnels](#ssh-tunnels)
+* [SSH Web Proxy](#ssh-webproxy)
 * [User Security](#user-security)
 * [X11 Forwarding](#x11-forwarding)
 * [Shell In A Box](#shell-in-a-box)
@@ -84,6 +85,29 @@ For a "reverse tunnel" (i.e. tunnel back into the server I'm ssh-ing from)
 ```
 root@host# ssh -CfN cci-bridge.4over.com -l root -R 2222:localhost:22
 ```
+
+## SSH Webproxy
+
+A SOCKS proxy is basically an SSH tunnel in which specific applications forward their traffic down the tunnel to the server, and then on the server end, the proxy forwards the traffic out to the general Internet. Unlike a VPN, a SOCKS proxy has to be configured on an app by app basis on the client machine, but can be set up without any specialty client agents.
+
+Example:
+
+```
+ssh -D 8123 -f -C -q -N user@sample.server.com
+```
+
+The breakdown
+
+* `-D 8123` Use SOCKS under specified port number (you can choose a number between 1025-65536)
+* `-f` Requests ssh to go to background just before command execution
+* `-C` Use Compression
+* `-q` Uses quiet mode
+*  `-N` Do not execute a remote command. 
+
+Then under Firefox (for example) Set the following settings (specifying your port...in the picture it's 1337 but use what you specified...like above it's 8123)
+
+![firefox-webproxy-settings](https://assets.digitalocean.com/articles/socks5/70cwU1N.png)
+
 
 ## User Security
 
