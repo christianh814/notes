@@ -101,8 +101,8 @@ rhel-7-fast-datapath-rpms \
 rhel-7-server-ose-3.5-rpms
 do
   reposync --gpgcheck -lm --repoid=${repo} --download_path=/path/to/repos
-  createrepo -v </path/to/repos/>${repo} -o </path/to/repos/>${repo}
-done</code>
+  createrepo -v /path/to/repos/${repo} -o /path/to/repos/${repo}
+done
 ```
 
 If this is in an apache webserver you can host your own repo by creating `/etc/yum.repos.d/myrepo.repo` file with the following contents on the client
