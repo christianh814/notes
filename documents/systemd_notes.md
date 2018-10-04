@@ -219,7 +219,8 @@ WantedBy=default.target
 
 This is what I did to set up hostname on boot
 
-```[root@dhcp-host-29 ~]# cat /etc/systemd/system/set-hostname.service
+```
+[root@dhcp-host-29 ~]# cat /etc/systemd/system/set-hostname.service
 [Unit]
 Description=Sets the hostname based on ip addr
 After=rsyslog.service network.target auditd.service
