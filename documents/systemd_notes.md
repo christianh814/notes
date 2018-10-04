@@ -217,6 +217,39 @@ TimeoutStartSec=0
 WantedBy=default.target
 ```
 
+This is what I did to set up hostname on boot
+
+```[root@dhcp-host-29 ~]# cat /etc/systemd/system/set-hostname.service
+[Unit]
+Description=Sets the hostname based on ip addr
+After=rsyslog.service network.target auditd.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/set-hostname
+TimeoutStartSec=0
+
+[Install]
+WantedBy=default.target
+
+
+[root@dhcp-host-29 ~]# cat /usr/local/bin/set-hostname
+#!/bin/bash
+# Set hostname on boot like cloud-init would
+mycounter=0
+while [ ${mycounter} -lt 7 ]; do
+  if ! ping -c 1 192.168.1.1 > /dev/null 2>&1 ; then
+    sleep 5
+    mycounter=$[${mycounter} + 1 ]
+  else
+    /usr/bin/hostnamectl set-hostname $(/usr/bin/dig -x $(/usr/bin/hostname -I | awk '{print $1}') +short)
+  fi
+done
+##
+##
+
+```
+
 ## RC Local
 
 Make the file executable
