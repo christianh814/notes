@@ -602,6 +602,7 @@ You can create VMs from a playbook. I used the following documentation to help m
 I also needed to install [python-ovirt-engine-sdk4](https://cbs.centos.org/koji/packageinfo?packageID=4119) from the CentOS CBS since it wasn't available in ANY repos I could find.
 
 __Step 1__
+
 You don't need to connect to any "host" so just use `localhost` in your `/etc/ansible/hosts` file like this
 
 ```
@@ -661,8 +662,9 @@ I created my playbook like this. Consult the documentation...this is mainly here
 ```
 __Step 3__
 
-Run your playbook
+Run your playbook (remember to export your password)
 
 ```
+export OVIRT_PASSWORD="mypassword"
 ansible-playbook create_vm.yml
 ```
