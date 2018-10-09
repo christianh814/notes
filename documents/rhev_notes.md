@@ -10,6 +10,7 @@ RHEV Is Red Hat's Virtualization platform. It's comparable to VMWare.
 * [Misc RHEVM Notes](#misc-rhevm-notes)
 * [RHEVM REST API](#rhevm-rest-api)
 * [Dell iDrac Info](#dell-idrac-info)
+* [Ansible Automation](#ansible-playbook)
 
 ## RHHI Notes
 
@@ -590,3 +591,78 @@ racadm config -g cfgIpmiSol -o cfgIpmiSolEnable 1
 racadm config -g cfgIpmiSol -o cfgIpmiSolMinPrivilege 4
 ```
 
+## Ansible Playbook
+
+You can create VMs from a playbook. I used the following documentation to help me.
+
+* [Module to manage authentication to oVirt/RHV](https://docs.ansible.com/ansible/2.6/modules/ovirt_auth_module.html)
+* [Module to manage Virtual Machines in oVirt/RHV](https://docs.ansible.com/ansible/2.5/modules/ovirt_vms_module.html)
+* [Module to manage Virtual Machine and floating disks in oVirt](https://docs.ansible.com/ansible/2.3/ovirt_disks_module.html)
+
+I also needed to install [python-ovirt-engine-sdk4](https://cbs.centos.org/koji/packageinfo?packageID=4119) from the CentOS CBS since it wasn't available in ANY repos I could find.
+
+__Step 1__
+You don't need to connect to any "host" so just use `localhost` in your `/etc/ansible/hosts` file like this
+
+```
+[vmhost]
+localhost ansible_connection=local
+```
+
+__Step 2__
+
+I created my playbook like this. Consult the documentation...this is mainly here for "notes"
+
+```yaml
+- hosts: all
+  tasks:
+
+  - name: Get RHEVM Auth
+    ovirt_auth:
+      url: https://rhevm.cloud.chx/ovirt-engine/api
+      username: admin@internal
+      password: "{{ lookup('env','OVIRT_PASSWORD') }}"
+      insecure: true
+      state: present
+
+  - name: Create VM
+    ovirt_vms:
+      auth: "{{ ovirt_auth }}"
+      name: test1
+      state: running
+      cluster: Default
+      template: rhel-7-template
+      memory: 8GiB
+      memory_guaranteed: 2GiB
+      cpu_threads: 2
+      cpu_cores: 2
+      cpu_sockets: 1
+      type: server
+      operating_system: rhel_7x64
+      nics:
+      - name: nic1
+        profile_name: ovirtmgmt
+      wait: true
+
+  - name:  Attach additional disk to VM
+    ovirt_disk:
+      auth: "{{ ovirt_auth }}"
+      name: test1-extra-disk
+      vm_name: test1
+      state: attached
+      size: 100GiB
+      storage_domain: vmdata
+      format: cow
+      interface: virtio
+      wait: true
+
+##
+##
+```
+__Step 3__
+
+Run your playbook
+
+```
+ansible-playbook create_vm.yml
+```
