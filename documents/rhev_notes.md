@@ -597,7 +597,7 @@ You can create VMs from a playbook. I used the following documentation to help m
 
 * [Module to manage authentication to oVirt/RHV](https://docs.ansible.com/ansible/2.6/modules/ovirt_auth_module.html)
 * [Module to manage Virtual Machines in oVirt/RHV](https://docs.ansible.com/ansible/2.5/modules/ovirt_vms_module.html)
-* [Module to manage Virtual Machine and floating disks in oVirt](https://docs.ansible.com/ansible/2.3/ovirt_disks_module.html)
+* [Module to manage Virtual Machine and floating disks in oVirt](https://docs.ansible.com/ansible/2.4/ovirt_disk_module.html)
 
 I also needed to install [python-ovirt-engine-sdk4](https://cbs.centos.org/koji/packageinfo?packageID=4119) from the CentOS CBS since it wasn't available in ANY repos I could find.
 
