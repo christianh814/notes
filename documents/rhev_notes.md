@@ -630,6 +630,7 @@ I created my playbook like this. Consult the documentation...this is mainly here
     ovirt_vms:
       auth: "{{ ovirt_auth }}"
       name: test1
+      comment: This is a test VM
       state: running
       cluster: Default
       template: rhel-7-template
@@ -667,4 +668,31 @@ Run your playbook (remember to export your password)
 ```
 export OVIRT_PASSWORD="mypassword"
 ansible-playbook create_vm.yml
+```
+
+__Notes__
+
+A playbook to delete vms would look like this
+
+```yaml
+- hosts: all
+  tasks:
+
+  - name: Get RHEVM Auth
+    ovirt_auth:
+      url: https://rhevm.cloud.chx/ovirt-engine/api
+      username: admin@internal
+      password: "{{ lookup('env','OVIRT_PASSWORD') }}"
+      insecure: true
+      state: present
+
+  - name: Delete VM
+    ovirt_vms:
+      auth: "{{ ovirt_auth }}"
+      name: test1
+      state: absent
+      cluster: Default
+      wait: true
+##
+##
 ```
