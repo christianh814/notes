@@ -672,7 +672,7 @@ ansible-playbook create_vm.yml
 
 __Notes__
 
-A playbook to delete vms would look like this
+A playbook to delete vms would look like this (good thing to note that this also destroys all disks that were attached to the VM at the time)
 
 ```yaml
 - hosts: all
