@@ -655,7 +655,7 @@ I created my playbook like this. Consult the documentation...this is mainly here
       size: 100GiB
       storage_domain: vmdata
       format: cow
-      interface: virtio
+      interface: virtio_scsi
       wait: true
 
 ##
@@ -696,3 +696,4 @@ A playbook to delete vms would look like this (good thing to note that this also
 ##
 ##
 ```
+I've created a repo for the playbooks I'm using to automate the building of OCP clusters [HERE](https://github.com/christianh814/ocp-rhev-ansible)
