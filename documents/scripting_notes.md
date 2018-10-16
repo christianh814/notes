@@ -2,6 +2,7 @@
 
 * [KSH Notes](#ksh-notes)
 * [Misc Commands](#misc-commands)
+* [OpenVPN](#openvpn)
 
 ## KSH Notes
 
@@ -485,3 +486,13 @@ Then I made it executable
 ```
 
 Now I was able to run the `grub2-mkconfig -o /boot/grub2/grub.cfg` and was able to see Windows 7 in the grub menu
+
+## OpenVPN
+
+OpenVPN client is easy if you were given the proper config file. Used with the `--daemon` option it runs in the background (note, don't use this if you have a VPN that requires MFA as you'll never be prompted for a password)
+
+```
+openvpn --config remote-network.ovpn --daemon
+```
+
+You might have to edit your `/etc/resolv.conf` in order to see that network's servers by name.
