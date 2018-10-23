@@ -120,9 +120,11 @@ systemctl reboot
 ## OpenStack Setup
 
 __1. Remove existing networking__
+
 Okay, now we setup our OpenStack networking to connect to our external network. **First**, from Horizon or the command line, delete all networks, ports and routers it created by default. We will recreate our own private and public networks. (**NOTE** I didn't have to do this for OSP13)
 
 __2. Edit drivers__
+
 Next edit your `/etc/neutron/plugins/ml2/ml2_conf.ini` file and make the following changes
 ```
 type_drivers = local,flat,vlan,gre,vxlan
