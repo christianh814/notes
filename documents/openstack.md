@@ -57,18 +57,16 @@ Install OSP rpms
 yum install -y openstack-packstack python-netaddr
 ```
 
-Install an all-in-one RHOSP (one of these will work)
+Install an all-in-one RHOSP (if the below doesn't work for you try `packstack --allinone --provision-ovs-bridge=n` ...but the below worked for me on OSP13)
 
 ```
 packstack --allinone  --provision-demo=n --os-neutron-ovs-bridge-mappings=physnet1:br-ex --os-neutron-ml2-type-drivers=vxlan,flat
-packstack --allinone --provision-ovs-bridge=n  
 ```
 
-The all-in-one installation creates the 'admin' and 'demo' users. To view passwords for later use, run:
+The all-in-one installation creates an `admin` user. To view passwords for later use, run:
 
 ```
 grep OS_PASSWORD /root/keystonerc_admin    
-grep OS_PASSWORD /root/keystonerc_demo  
 ```
 
 ## Host Setup
