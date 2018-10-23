@@ -1,4 +1,4 @@
-# RHOSP 10
+# RHOSP 13
 
 This is an overview on how to install OpenStack all-in-one setup.
 
@@ -33,7 +33,11 @@ Enable the proper entitlements
 
 ```
 subscription-manager repos --disable=*  
-subscription-manager repos --enable=rhel-7-server-rpms --enable=rhel-7-server-rh-common-rpms --enable=rhel-7-server-extras-rpms --enable=rhel-7-server-openstack-10-rpms --enable=rhel-7-server-openstack-10-devtools-rpms
+subscription-manager repos --enable=rhel-7-server-rpms
+subscription-manager repos --enable=rhel-7-server-rh-common-rpms
+subscription-manager repos --enable=rhel-7-server-extras-rpms
+subscription-manager repos --enable=rhel-7-server-openstack-13-rpms
+subscription-manager repos --enable=rhel-7-server-openstack-13-devtools-rpms
 ```
 
 Install Packages
@@ -117,12 +121,15 @@ systemctl reboot
 
 ## OpenStack Setup
 
-Okay, now we setup our OpenStack networking to connect to our external network. **First**, from Horizon or the command line, delete all networks, ports and routers it created by default. We will recreate our own private and public networks.
+__1. Remove existing networking__
+Okay, now we setup our OpenStack networking to connect to our external network. **First**, from Horizon or the command line, delete all networks, ports and routers it created by default. We will recreate our own private and public networks. (**NOTE** I didn't have to do this for OSP13)
 
+__2. Edit drivers__
 Next edit your `/etc/neutron/plugins/ml2/ml2_conf.ini` file and make the following changes
 ```
 type_drivers = local,flat,vlan,gre,vxlan
 ```
+__3. Create networking__
 
 Next commands create a new router named "router", a private and public network and a private subnet and a public subnet, then we set the default gateway for our router. For the public network I assign a range of IPs my home DHCP server does not assign to, so just make sure there is not an IP conflict with the IPs you're assigning here and your external network. 
 
@@ -137,7 +144,8 @@ Next commands create a new router named "router", a private and public network a
 [root@rhosp ~(keystone_admin)]# neutron subnet-create public 172.16.1.0/24 --name public_subnet --enable_dhcp=False --allocation-pool start=172.16.1.30,end=172.16.1.39 --gateway=172.16.1.1
 [root@rhosp ~(keystone_admin)]# neutron router-gateway-set router public
 ```
-
+ __4. Profit__
+ 
 That's it. Allow ICMP and SSH to your default security group in the Access & Security section in Horizon. You should now be able to spin up a new instance using the included cirros image to test this. On the Networking tab, only assign a private IP. We will be allocating a floating IP to our project, then assigning this floating IP to this instance for external access.
 
 ## Cinder Storage
