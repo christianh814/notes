@@ -4,6 +4,6 @@ Please forgive me but I'm learning Golang (and it's also my first statically typ
 
 Please forgive any mistakes as I'm just a beginer...
 
-[](images/hedious.gif)
+![](images/hedious.gif)
 
 I appreceate [feedback](./golang) tho! 
