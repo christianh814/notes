@@ -18,7 +18,7 @@ func even(f func(xi ...int) int, ix ...int) int {
 	var yi []int
 	// range over the slice that was passed with `ix` and add only the even numbers to  the empty slice of int that is `yi`
 	for _, v := range ix {
-		if v % 2 == 0 {
+		if v%2 == 0 {
 			yi = append(yi, v)
 		}
 	}
@@ -32,7 +32,7 @@ func odd(f func(xi ...int) int, ix ...int) int {
 	var yi []int
 	// range over the slice that was passed with `ix` and add only the even numbers to  the empty slice of int that is `yi`
 	for _, v := range ix {
-		if v % 2 != 0 {
+		if v%2 != 0 {
 			yi = append(yi, v)
 		}
 	}
@@ -40,7 +40,7 @@ func odd(f func(xi ...int) int, ix ...int) int {
 	return f(yi...)
 }
 
-func main () {
+func main() {
 	ii := []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
 	s := sum(ii...)
 	fmt.Println("All numbers summed up", s)

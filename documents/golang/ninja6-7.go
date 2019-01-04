@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func foo(){
+func foo() {
 	fmt.Println("You got the func")
 }
 

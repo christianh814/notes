@@ -1,28 +1,28 @@
 package main
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 )
 
 // In order for these to be exported, they need to be capital
-type user struct{
+type user struct {
 	First string
-	Age int
+	Age   int
 }
 
 func main() {
 	u1 := user{
 		First: "James",
-		Age: 47,
+		Age:   47,
 	}
 	u2 := user{
 		First: "Ricky",
-		Age: 22,
+		Age:   22,
 	}
 	u3 := user{
 		First: "Peter",
-		Age: 77,
+		Age:   77,
 	}
 	users := []user{u1, u2, u3}
 	//

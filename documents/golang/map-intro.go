@@ -6,7 +6,7 @@ func main() {
 	//maps are key value pairs. (unordered). Unlike other langages; it needs the trailing comma
 	// syntax is `map[keytype]valuetype{element1:value1, element2:value2, ...}`
 	x := map[string]int{
-		"James": 42,
+		"James":      42,
 		"MoneyPenny": 24,
 	}
 	fmt.Println(x)
@@ -20,7 +20,6 @@ func main() {
 	fmt.Println(v)
 	// this prints out `false` since it doesn't exist
 	fmt.Println(ok)
-
 
 	// This is how you would check it in a if
 	if v, ok := x["foobar"]; ok {

@@ -20,7 +20,7 @@ func main() {
 	var mu sync.Mutex
 
 	for i := 0; i < gs; i++ {
-		go func(){
+		go func() {
 			// "locks" (or "checks out" (like in a Library)) these variables so no other routines can
 			// modify them while in use. Everyting from here down to the unlock is considered "locked"
 			mu.Lock()

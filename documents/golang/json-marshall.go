@@ -1,31 +1,31 @@
 package main
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 )
 
 // In order for json.Marshal to work; the fields need to be upper case
 type person struct {
 	First string
-	Last string
-	Age int
+	Last  string
+	Age   int
 }
 
 func main() {
-	p1 := person {
+	p1 := person{
 		First: "Christian",
-		Last: "Hernandez",
-		Age: 36,
+		Last:  "Hernandez",
+		Age:   36,
 	}
-	p2 := person {
+	p2 := person{
 		First: "Wendy",
-		Last: "Thomas",
-		Age: 39,
+		Last:  "Thomas",
+		Age:   39,
 	}
 
 	// I'm creating an array. "people" is a "slice" of "person" with p1 and p2
-	people := []person{p1, p2,}
+	people := []person{p1, p2}
 
 	// This function takes an interface and returns a slice of byte and an error
 	// func Marshal(v interface{}) ([]byte, err)

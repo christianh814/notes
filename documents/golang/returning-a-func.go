@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func bar() func() int {
-	return func() int{
+	return func() int {
 		return 451
 	}
 }

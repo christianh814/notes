@@ -4,8 +4,8 @@ import "fmt"
 
 func main() {
 	m := map[string]int{
-		"Paul": 47,
-		"Mike": 22,
+		"Paul":  47,
+		"Mike":  22,
 		"Diane": 59,
 	}
 	fmt.Println(m)

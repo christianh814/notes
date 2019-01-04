@@ -12,6 +12,6 @@ func main() {
 	// make a big array from two smaller ones????
 	y := []string{"tiger", "lion", "bear"}
 	// here the `...` after the y means "take all the values from y and put them here"
-	x  = append(x, y...)
+	x = append(x, y...)
 	fmt.Println(x)
 }

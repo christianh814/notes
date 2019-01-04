@@ -1,6 +1,7 @@
 package main
 
 import "fmt"
+
 //Closure is limiting the scope of a variable. Below the scope of x is this WHOLE app. Meaning that even functions will get this
 var x int
 

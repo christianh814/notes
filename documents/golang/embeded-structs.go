@@ -3,14 +3,14 @@ package main
 import "fmt"
 
 // A `struct` is a data structure of different types
-type person struct{
+type person struct {
 	first string
-	last string
-	age int
+	last  string
+	age   int
 }
 
 //embed a struct inside a struct :-0
-type secretAgent struct{
+type secretAgent struct {
 	// this struct has the same struct as a person
 	person
 	// PLUS a licence to kill
@@ -21,8 +21,8 @@ func main() {
 	sa1 := secretAgent{
 		person: person{
 			first: "James",
-			last: "Bond",
-			age: 32,
+			last:  "Bond",
+			age:   32,
 		},
 		ltk: true,
 	}

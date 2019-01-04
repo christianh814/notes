@@ -5,13 +5,13 @@ import "fmt"
 func main() {
 	s := struct {
 		first string
-		last string
+		last  string
 		hands map[string]string
 	}{
 		first: "Christian",
-		last: "Hernandez",
+		last:  "Hernandez",
 		hands: map[string]string{
-			"left": "fine",
+			"left":  "fine",
 			"right": "swollen",
 		},
 	}

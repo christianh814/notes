@@ -27,7 +27,7 @@ func main() {
 	fmt.Println("----------------------------------")
 	fmt.Println("Goroutines:\t", runtime.NumGoroutine())
 
-	// Wait for the process to singnal that it's done 
+	// Wait for the process to singnal that it's done
 	fmt.Println("Waiting for process foo() to be done")
 	wg.Wait()
 }

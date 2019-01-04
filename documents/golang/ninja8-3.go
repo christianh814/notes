@@ -1,32 +1,32 @@
 package main
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
 	"os"
 )
 
 type user struct {
 	First string
-	Last string
-	Age int
+	Last  string
+	Age   int
 }
 
 func main() {
 	u1 := user{
 		First: "Christian",
-		Last: "Hernandez",
-		Age: 36,
+		Last:  "Hernandez",
+		Age:   36,
 	}
 	u2 := user{
 		First: "Mark",
-		Last: "Anthony",
-		Age: 45,
+		Last:  "Anthony",
+		Age:   45,
 	}
 	u3 := user{
 		First: "Martha",
-		Last: "Smith",
-		Age: 24,
+		Last:  "Smith",
+		Age:   24,
 	}
 	users := []user{u1, u2, u3}
 	// this turns the `users` data structure (which is a slice of type user...which is a struct) into a json format. Pipe this to `python -m json.tool` to see

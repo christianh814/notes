@@ -13,7 +13,6 @@ func main() {
 	fmt.Println(xi)
 	fmt.Println(xs)
 
-
 	//formatting stuff
 	fmt.Println("---------------")
 

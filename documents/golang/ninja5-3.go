@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-type vehicle struct{
+type vehicle struct {
 	doors int
 	color string
 }
@@ -18,7 +18,7 @@ type sedan struct {
 }
 
 func main() {
-	ford := truck {
+	ford := truck{
 		vehicle: vehicle{
 			doors: 2,
 			color: "green",
@@ -26,7 +26,7 @@ func main() {
 		fourWheel: true,
 	}
 	fmt.Println(ford)
-	lexus := sedan {
+	lexus := sedan{
 		vehicle: vehicle{
 			doors: 4,
 			color: "gold",

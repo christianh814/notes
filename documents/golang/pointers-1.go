@@ -4,7 +4,7 @@ import "fmt"
 
 func main() {
 	a := 42
-	// the & before the variable shows it's address in memory 
+	// the & before the variable shows it's address in memory
 	fmt.Println(&a)
 
 	fmt.Printf("%T\n", a)

@@ -13,7 +13,7 @@ func (p person) speak() {
 }
 
 func main() {
-	p1 := person {
+	p1 := person{
 		fn: "Christian",
 		ln: "Hernandez",
 		ag: 36,

@@ -17,7 +17,7 @@ func main() {
 	wg.Add(gs)
 
 	for i := 0; i < gs; i++ {
-		go func(){
+		go func() {
 			v := counter
 			// This is like time.Sleep(time.Second) - this is cleaner. `Gosched` yeilds the processor to allow
 			// other Goroutines to run...this is helpful if you don't have a lot of processors

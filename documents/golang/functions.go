@@ -21,9 +21,10 @@ func bazz(s string) bool {
 func name(fn, ln string) map[string]string {
 	return map[string]string{
 		"First": fn,
-		"Last": ln,
+		"Last":  ln,
 	}
 }
+
 //
 
 func main() {

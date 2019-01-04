@@ -15,7 +15,7 @@ func changeMe(p *person) {
 }
 
 func main() {
-	p1 := person {
+	p1 := person{
 		fn: "Christian",
 		ln: "Hernandez",
 		ag: 36,

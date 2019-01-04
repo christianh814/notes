@@ -19,6 +19,7 @@ func (s secretAgent) speak() {
 		fmt.Println("...I have a license to kill")
 	}
 }
+
 //
 func main() {
 	sa1 := secretAgent{

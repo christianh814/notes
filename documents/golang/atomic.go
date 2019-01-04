@@ -18,7 +18,7 @@ func main() {
 	wg.Add(gs)
 
 	for i := 0; i < gs; i++ {
-		go func(){
+		go func() {
 			// atomic takes an address to a conunter and the delta (or how much you want to incrament it by...you can use
 			// negatives to decrement)
 			atomic.AddInt64(&counter, 1)

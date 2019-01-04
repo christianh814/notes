@@ -17,4 +17,3 @@ func main() {
 	sort.Strings(xs)
 	fmt.Println(xs)
 }
-

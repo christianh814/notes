@@ -17,13 +17,12 @@ type human interface {
 	speak()
 }
 
-
 func saySomething(h human) {
 	h.speak()
 }
 
 func main() {
-	p1 := person {
+	p1 := person{
 		Fname: "Christian",
 		Lname: "Hernandez",
 	}
@@ -33,8 +32,6 @@ func main() {
 	// This will work
 	saySomething(&p1)
 }
-
-
 
 //
 //-30-
