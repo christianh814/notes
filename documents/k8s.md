@@ -34,3 +34,70 @@ Assumptions:
 * DNS is in place (forward and reverse)
 
 # Infrastructure
+
+I have spun up 7 VMs
+
+* 1 LB VM
+* 3 VMs for the controllers (will also run etcd)
+* 3 VMs for the workers
+
+
+The contollers/workers are set up as follows
+
+* Latest CentOS 7
+* 50GB HD for the OS
+* 4 GB of RAM
+* 4 vCPUs
+* Swap has been disabled
+* SELinux has been disabled (part of the howto)
+* Firewall has been disabled (part of the howto)
+
+## HAProxy Setup
+
+Although not 100% within the scope of this document (really any LB will do); this is how I set up my LB on my LB server. These are "high level" notes.
+
+Install HAProxy package
+
+```
+yum -y install haproxy
+```
+
+Then I enable `6443` (kube api) and `9000` (haproxy stats) on the firewall
+
+```
+firewall-cmd --add-port=6443/tcp --add-port=6443/udp --add-port=9000/tcp --add-port=9000/udp --permanent
+firewall-cmd --reload
+```
+
+If using selinux, make sure "connect any" is on
+
+```
+setsebool -P haproxy_connect_any=on
+```
+
+Edit the `/etc/haproxy/haproxy.cfg` file and add the following
+
+```
+frontend  kube-api
+    bind *:6443
+    default_backend k8s-api
+    mode tcp
+    option tcplog
+
+backend k8s-api
+    balance source
+    mode tcp
+    server      controller-0 192.168.1.98:6443 check
+    server      controller-1 192.168.1.99:6443 check
+    server      controller-2 192.168.1.5:6443 check
+```
+
+If you want a copy of the whole file, you can find an example [here](k8s-resources/k8s-haproxy.cfg)
+
+Now you can start/enable the haproxy service
+
+```
+systemctl enable --now haproxy
+```
+
+I like to keep `<ip of lb>:9000` up so I can monitor when my control plane servers has come up
