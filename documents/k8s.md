@@ -7,6 +7,7 @@ Also, this is here mainly for my notes; so I may be brief in some sections. I TR
 This is broken off into sections
 
 * [Prerequisites And Assumptions](#prerequisites-and-assumptions)
+* [Infrastructure](#infrastructure)
 
 # Prerequisites And Assumptions
 
@@ -26,3 +27,10 @@ Prereqs:
 
 
 Assumptions:
+
+* You are well vested in the art of Linux
+* You're running this on virtual machines
+* You either have preassinged DHCP or static ips
+* DNS is in place (forward and reverse)
+
+# Infrastructure
