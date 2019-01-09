@@ -3,7 +3,7 @@
 These are my personal notes that I've collected over the years, documenting my experences. They are in no paticular order and, at times, not complete. Feel free to use them but use at your own risk. (pull requests/corrections welcome!)
 
 * [OpenShift](https://github.com/christianh814/openshift-toolbox/blob/master/README.md#openshift-toolbox)
-* [kubernetes](documents/k8s.md)
+* [Kubernetes](documents/k8s.md)
 * [GIT Notes](documents/git_notes.md)
 * [GlusterFS Notes](documents/glusterfs_notes3.md)
 * [FirewallD Notes](documents/firewalld_notes.md)
