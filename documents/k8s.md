@@ -726,7 +726,7 @@ metadata:
   name: nginx-ingress
 spec:
   rules:
-  - host: test.akomljen.com
+  - host: test.192.168.1.99.nip.io
     http:
       paths:
       - backend:
@@ -743,7 +743,7 @@ metadata:
   name: app-ingress
 spec:
   rules:
-  - host: test.akomljen.com
+  - host: test.192.168.1.99.nip.io
     http:
       paths:
       - backend:
@@ -763,6 +763,44 @@ Create both ingress rules
 kubectl -n ingress create -f nginx-ingress.yaml
 kubectl -n test create -f app-ingress.yaml
 ```
+
+The last step is to expose `nginx-ingress-lb` deployment for external access. We will expose it with `NodePort`, but we could also use `ExternalIPs` here:
+
+```
+cat > nginx-ingress-controller-service.yaml <<EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ingress
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      nodePort: 30000
+      name: http
+    - port: 18080
+      nodePort: 32000
+      name: http-mgmt
+  selector:
+    app: nginx-ingress-lb
+EOF
+```
+
+Apply this
+
+```
+kubectl create -n ingress -f nginx-ingress-controller-service.yaml
+```
+
+Verify these by accessing the following endpoinds
+
+```
+http://test.192.168.1.99.nip.io:30000/app1
+http://test.192.168.1.99.nip.io:30000/app2
+http://test.192.168.1.99.nip.io:32000/nginx_status
+```
+
+Any other endpoint results in the default 404 page
 
 
 # Miscellaneous Notes
