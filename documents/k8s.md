@@ -8,6 +8,7 @@ This is broken off into sections
 
 * [Prerequisites And Assumptions](#prerequisites-and-assumptions)
 * [Infrastructure](#infrastructure)
+* [Installing Kubeadm](#installing-kubeadm)
 
 # Prerequisites And Assumptions
 
@@ -44,7 +45,7 @@ I have spun up 7 VMs
 
 The contollers/workers are set up as follows
 
-* Latest CentOS 7
+* Latest CentOS 7 (FULLY updated with `yum -y update` and `systemctl reboot`-ed)
 * 50GB HD for the OS
 * 4 GB of RAM
 * 4 vCPUs
@@ -101,3 +102,34 @@ systemctl enable --now haproxy
 ```
 
 I like to keep `<ip of lb>:9000` up so I can monitor when my control plane servers has come up
+
+# Installing Kubeadm
+
+First, on ALL servers (from here on out when I say "ALL servers" I mean the 3 controllers and 3 workers), install the runtime. This can be `cri-o`, `containerd`, `docker`, or `rkt`. For ease of use; I installed `docker`
+
+```
+ansible all -m shell -a "yum -y install docker"
+ansible all -m shell -a "systemctl enable --now docker"
+```
+
+Next, on ALL servers, install these packages:
+
+* `kubeadm`: the command to bootstrap the cluster.
+* `kubelet`: the component that runs on all of the machines in your cluster and does things like starting pods and containers.
+* `kubectl`: the command line util to talk to your cluster.
+
+You should also disable the firewall and SELinux at this point as well
+
+```
+ansible all -m shell -a "sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config"
+ansible all -m shell -a "setenforce 0"
+ansible all -m shell -a "systemctl stop firewalld"
+ansible all -m shell -a "systemctl disable firewalld"
+ansible all -m copy -a "src=files/k8s.repo dest=/etc/yum.repos.d/kubernetes.repo"
+ansible all -m shell -a "yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes"
+ansible all -m shell -a "systemctl enable --now kubelet"
+ansible all -m copy -a "src=files/sysctl_k8s.conf dest=/etc/sysctl.d/k8s.conf"
+ansible all -m shell -a "sysctl --system"
+```
+
+(Note: A copy of [k8s.repo](k8s-resources/k8s.repo) and [sysctl_k8s.conf](k8s-resources/sysctl_k8s.conf) are found in this repo)
