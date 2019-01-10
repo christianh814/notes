@@ -797,6 +797,85 @@ http://test.192.168.1.99.nip.io:32000/nginx_status
 
 Any other endpoint results in the default 404 page
 
+## Using ExternalIPs
+
+To use an `externalIPs` object, the IP must already be assinged to the node (it doesn't create it for you). Since I'm testing this on VMs I'll just use the IP that's already on the node.
+
+First get the IP from the ingress controller
+
+```
+[root@jumpbox test-yamls]# kubectl get pods -n ingress -o wide -l app=nginx-ingress-lb
+NAME                                        READY   STATUS    RESTARTS   AGE   IP           NODE                    NOMINATED NODE   READINESS GATES
+nginx-ingress-controller-854cff467c-h4nk2   1/1     Running   0          41m   10.254.3.5   dhcp-host-8.cloud.chx   <none>           <none>
+[root@jumpbox test-yamls]# dig dhcp-host-8.cloud.chx +short
+192.168.1.8
+```
+
+Looks like my ingress controller is running on host `dhcp-host-8.cloud.chx` with ip of `192.168.1.8`
+
+Now I'm going to create my app's ingress object
+
+```
+cat > app-ingress-exip.yaml <<EOF
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  name: app-ingress-exip
+spec:
+  rules:
+  - host: app.192.168.1.8.nip.io
+    http:
+      paths:
+      - backend:
+          serviceName: appsvc1
+          servicePort: 80
+        path: /
+EOF
+```
+
+Create this in the `test` namespace
+
+```
+kubectl create -n test -f app-ingress-exip.yaml
+```
+
+Now create the ingress controller on port 80. Note the use of `externalIPs`
+
+```
+cat > ginx-ingress-controller-service-exip.yaml <<EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ingress-exip
+spec:
+  externalIPs:
+  - 192.168.1.8
+  ports:
+    - port: 80
+      name: http
+  selector:
+    app: nginx-ingress-lb
+EOF
+```
+
+Now create this service in the `ingress` namespace
+
+```
+kubectl create -n ingress -f ginx-ingress-controller-service-exip.yaml
+```
+
+Test it out with curl (example below) or on your browser
+
+```
+# curl -s app.192.168.1.8.nip.io  | grep app1
+<h1 id="toc_0">Hello app1!</h1>
+```
+
+Success!
+
+**NOTE** Please note that you've effectively made `dhcp-host-8.cloud.chx` your "infrastrucure" node (if you're coming from "openshift" land)
 
 # Miscellaneous Notes
 
