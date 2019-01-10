@@ -301,12 +301,7 @@ Test your cluster by deploying a pod with a `NodePort` definition.
 First create a namespace
 
 ```
-cat <<EOF | kubectl apply -f -
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: test
-EOF
+kubectl create namespace test
 ```
 
 Next, deploy a pod and a service to this namespace
