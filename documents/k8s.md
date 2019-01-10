@@ -917,7 +917,7 @@ This QnD assumes the following
 * You have exported that ingress controller on a [node on port 80](#using-externalips)
 * You have DNS in place that points to that ingress node (or you're using nip.io)
 
-If ALL of the above are true...then feel free to proceed.
+If **ALL** of the above are true...then feel free to proceed.
 
 To create a "route" create an ingress object to tell the controller what to do when it recv a `HTTP_HOST` headder with what's in the `host:` section in your YAML. Example...
 
@@ -947,4 +947,12 @@ Apply it to the app in your namespace
 
 ```
 kubectl create -n test -f app2-ingress-exip.yaml
+```
+
+You should see it now in k8s
+
+```
+kubectl get ingress app2-ingress-exip -n test
+NAME                HOSTS                     ADDRESS   PORTS   AGE
+app2-ingress-exip   app2.192.168.1.8.nip.io             80      66s
 ```
