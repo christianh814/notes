@@ -9,6 +9,10 @@ This is broken off into sections
 * [Prerequisites And Assumptions](#prerequisites-and-assumptions)
 * [Infrastructure](#infrastructure)
 * [Installing Kubeadm](#installing-kubeadm)
+* [Initialize the Control Plane](#initialize-the-control-plane)
+* [Bootstrap Remaining Controllers](#bootstrap-remaining-controllers)
+* [Bootstrap Worker Nodes](#bootstrap-worker-nodes)
+* [Misc](#miscellaneous-notes)
 
 # Prerequisites And Assumptions
 
@@ -133,3 +137,181 @@ ansible all -m shell -a "sysctl --system"
 ```
 
 (Note: A copy of [k8s.repo](k8s-resources/k8s.repo) and [sysctl_k8s.conf](k8s-resources/sysctl_k8s.conf) are found in this repo)
+
+If you run `systemctl status kubelet` you will see it error out becuase it's trying to connect to a control plane that's not there. This is a normal error.
+
+At this point, "pre-pull" the required images on ONLY the controllers to run the control plane.
+
+```
+ansible controllers -m shell -a "kubeadm config images pull"
+```
+
+# Initialize the Control Plane
+
+Pick one of the controllers (doesn't matter which one) and initialize the control plane with `kubeadm`. I used a config file since I was going through a loadbalancer. (Also note, if you're using Calico (like I was) you have to specify a `podSubnet` that's something other than `192.168.0.0/16`)
+
+I did the following on my first controller (in my case my LB was `192.168.1.97`)
+
+```
+LBIP=192.168.1.97
+cat <<EOF > kubeadm-config.yaml
+apiVersion: kubeadm.k8s.io/v1beta1
+kind: ClusterConfiguration
+kubernetesVersion: stable
+apiServer:
+  certSANs:
+  - ${LBIP}
+controlPlaneEndpoint: ${LBIP}:6443
+networking:
+  podSubnet: 10.254.0.0/16
+  serviceSubnet: 172.30.0.0/16
+EOF
+```
+
+Use this `kubeadm-config.yaml` in install the first controller. On the controller you created the file, run the `kubeadm init` command...
+
+
+```
+kubeadm init --config=kubeadm-config.yaml
+```
+
+At this point, if you reload your LB's status page, you should see the first controller going green.
+
+When the bootstrapping finishes; you should see a message like the following. SAVE THIS MESSAGE! You'll need this to join the other 2 controllers. 
+
+```
+kubeadm join <lb ip>:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash>
+```
+
+Next, install a CNI compliant SDN. I used Calico since it was the easiest. First wget them
+
+```
+curl -O https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
+curl -O https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
+```
+
+Edit the `calico.yaml` file to use the `podSubnet` you defined in the `kubeadm-config.yaml` file
+
+```
+sed -i 's/192\.168/10\.254/g' calico.yaml
+```
+
+Now load these into kubernetes
+
+```
+export KUBECONFIG=/etc/kubernetes/admin.conf
+kubectl apply -f rbac-kdd.yaml
+kubectl apply -f calico.yaml
+```
+
+Wait a few minutes and you should see CoreDNS and the Calico pods up
+
+```
+kubectl get pods --all-namespaces
+NAMESPACE     NAME                                             READY   STATUS    RESTARTS   AGE
+kube-system   calico-node-g6s98                                2/2     Running   0          33s
+kube-system   coredns-86c58d9df4-gq6n8                         1/1     Running   0          15m
+kube-system   coredns-86c58d9df4-pl6m6                         1/1     Running   0          15m
+kube-system   etcd-dhcp-host-98.cloud.chx                      1/1     Running   0          14m
+kube-system   kube-apiserver-dhcp-host-98.cloud.chx            1/1     Running   0          14m
+kube-system   kube-controller-manager-dhcp-host-98.cloud.chx   1/1     Running   0          14m
+kube-system   kube-proxy-6dn5z                                 1/1     Running   0          15m
+kube-system   kube-scheduler-dhcp-host-98.cloud.chx            1/1     Running   0          13m
+```
+# Bootstrap Remaining Controllers
+
+After the SDN is installed; this is the point you can boostrap the remaining controllers. Now copy the certificate files from the first control plane node to the rest of them
+
+```
+for host in 192.168.1.99 192.168.1.5 
+do
+    scp /etc/kubernetes/pki/ca.crt root@$host:
+    scp /etc/kubernetes/pki/ca.key root@$host:
+    scp /etc/kubernetes/pki/sa.key root@$host:
+    scp /etc/kubernetes/pki/sa.pub root@$host:
+    scp /etc/kubernetes/pki/front-proxy-ca.crt root@$host:
+    scp /etc/kubernetes/pki/front-proxy-ca.key root@$host:
+    scp /etc/kubernetes/pki/etcd/ca.crt root@$host:etcd-ca.crt
+    scp /etc/kubernetes/pki/etcd/ca.key root@$host:etcd-ca.key
+    scp /etc/kubernetes/admin.conf root@$host:
+done
+```
+
+Now on the 2 remaining hosts run the follwing commands
+
+```
+mkdir -p /etc/kubernetes/pki/etcd
+mv /root/ca.crt /etc/kubernetes/pki/
+mv /root/ca.key /etc/kubernetes/pki/
+mv /root/sa.pub /etc/kubernetes/pki/
+mv /root/sa.key /etc/kubernetes/pki/
+mv /root/front-proxy-ca.crt /etc/kubernetes/pki/
+mv /root/front-proxy-ca.key /etc/kubernetes/pki/
+mv /root/etcd-ca.crt /etc/kubernetes/pki/etcd/ca.crt
+mv /root/etcd-ca.key /etc/kubernetes/pki/etcd/ca.key
+mv /root/admin.conf /etc/kubernetes/admin.conf
+```
+
+Now finally join the remaining 2 controlplanes to the cluster
+
+```
+kubeadm join <lb ip>:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash> --experimental-control-plane
+```
+
+Once that finishes; you can see them listed with `kubectl`
+
+```
+kubectl get nodes
+NAME                     STATUS   ROLES    AGE     VERSION
+dhcp-host-5.cloud.chx    Ready    master   3m34s   v1.13.1
+dhcp-host-98.cloud.chx   Ready    master   34m     v1.13.1
+dhcp-host-99.cloud.chx   Ready    master   4m52s   v1.13.1
+```
+
+# Bootstrap Worker Nodes
+
+This part is the easiest; you just run the `kubeadm join ...` command WITHOUT the `--experimental-control-plane` flag
+
+
+On the 3 workers run the following
+```
+kubeadm join <lb ip>:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash>
+```
+
+Once they have joined; get it with `kubectl get nodes`
+
+
+```
+[root@jumpbox k8s-with-kubeadm]# kubectl get nodes
+NAME                     STATUS   ROLES    AGE     VERSION
+dhcp-host-5.cloud.chx    Ready    master   9m32s   v1.13.1
+dhcp-host-6.cloud.chx    Ready    <none>   53s     v1.13.1
+dhcp-host-7.cloud.chx    Ready    <none>   53s     v1.13.1
+dhcp-host-8.cloud.chx    Ready    <none>   54s     v1.13.1
+dhcp-host-98.cloud.chx   Ready    master   40m     v1.13.1
+dhcp-host-99.cloud.chx   Ready    master   10m     v1.13.1
+```
+
+# Miscellaneous Notes
+
+Notes in no paticular order
+
+## Get join token
+
+First create the token
+
+```
+kubeadm token create
+```
+
+Next, get the hash from the ca cert
+
+```
+openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
+```
+
+This is all you need in order to join using the `kubeadm join --token <token> <lb>:<port> --discovery-token-ca-cert-hash sha256:<hash>` syntax. You can list "join tokens" with
+
+```
+kubeadm token list
+```
