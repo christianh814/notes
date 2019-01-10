@@ -797,6 +797,13 @@ http://test.192.168.1.99.nip.io:32000/nginx_status
 
 Any other endpoint results in the default 404 page
 
+Note, once in place; all you need to expose your app is...
+
+* An ingress object (i.e. the `app-ingress.yaml` file)
+* A svc (i.e. `nginx-ingress-controller-service.yaml`)
+  * If you've already exposed the port you wanted, you don't need this!
+* The file will change (i.e. the `app-ingress.yaml` file), depending on the app and what path you want to route to what endpoint (see [using externalIPs](#using-externalips)
+
 ## Using ExternalIPs
 
 To use an `externalIPs` object, the IP must already be assinged to the node (it doesn't create it for you). Since I'm testing this on VMs I'll just use the IP that's already on the node.
