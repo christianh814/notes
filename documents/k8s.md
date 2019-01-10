@@ -907,3 +907,44 @@ This is all you need in order to join using the `kubeadm join --token <token> <l
 ```
 kubeadm token list
 ```
+## Create a Route
+
+This QnD assumes the following
+
+* You want to create a route for your app
+* Your app is already up and running with a service
+* You have installed an [ingress controller](#ingress)
+* You have exported that ingress controller on a [node on port 80](#using-externalips)
+* You have DNS in place that points to that ingress node (or you're using nip.io)
+
+If ALL of the above are true...then feel free to proceed.
+
+To create a "route" create an ingress object to tell the controller what to do when it recv a `HTTP_HOST` headder with what's in the `host:` section in your YAML. Example...
+
+Create the YAML
+
+```
+cat > app2-ingress-exip.yaml <<EOF
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  name: app2-ingress-exip
+spec:
+  rules:
+  - host: app2.192.168.1.8.nip.io
+    http:
+      paths:
+      - backend:
+          serviceName: appsvc2
+          servicePort: 80
+        path: /
+EOF
+```
+
+Apply it to the app in your namespace
+
+```
+kubectl create -n test -f app2-ingress-exip.yaml
+```
