@@ -12,6 +12,7 @@ This is broken off into sections
 * [Initialize the Control Plane](#initialize-the-control-plane)
 * [Bootstrap Remaining Controllers](#bootstrap-remaining-controllers)
 * [Bootstrap Worker Nodes](#bootstrap-worker-nodes)
+* [Smoke Test](#smoke-test)
 * [Misc](#miscellaneous-notes)
 
 # Prerequisites And Assumptions
@@ -291,6 +292,85 @@ dhcp-host-8.cloud.chx    Ready    <none>   54s     v1.13.1
 dhcp-host-98.cloud.chx   Ready    master   40m     v1.13.1
 dhcp-host-99.cloud.chx   Ready    master   10m     v1.13.1
 ```
+
+# Smoke Test
+
+Test your cluster by deploying a pod with a `NodePort` definition.
+
+First create a namespace
+
+```
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test
+EOF
+```
+
+Next, deploy a pod and a service to this namespace
+
+```
+cat <<EOF | kubectl apply -n test -f -
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: welcome-php
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: welcome-php
+    spec:
+      containers:
+        - image: "quay.io/redhatworkshops/welcome-php:latest"
+          imagePullPolicy: Always
+          name: welcome-php
+          ports:
+            - containerPort: 8080
+EOF
+cat <<EOF | kubectl apply -n test -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: welcome-php
+  labels:
+    app: welcome-php
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      nodePort: 30000
+      name: http
+  selector:
+    app: welcome-php
+EOF
+```
+
+Check to see if your pods and svc is up
+
+```
+kubectl get pods -n test
+NAME                           READY   STATUS    RESTARTS   AGE
+welcome-php-77f6d8845b-mnv4r   1/1     Running   0          76s
+
+kubectl get svc -n test
+NAME          TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+welcome-php   NodePort   172.30.67.197   <none>        8080:30000/TCP   81s
+```
+
+Curling the svc address should get you that 200
+
+```
+curl -sI 172.30.67.197:8080
+HTTP/1.1 200 OK
+Date: Thu, 10 Jan 2019 01:36:08 GMT
+Server: Apache/2.4.27 (Red Hat) OpenSSL/1.0.1e-fips
+Content-Type: text/html; charset=UTF-8
+```
+
+If you visit the IP of ANY node in the cluster on port 30000, you should see the app come up.
 
 # Miscellaneous Notes
 
