@@ -802,7 +802,7 @@ Note, once in place; all you need to expose your app is...
 * An ingress object (i.e. the `app-ingress.yaml` file)
 * A svc (i.e. `nginx-ingress-controller-service.yaml`)
   * If you've already exposed the port you wanted, you don't need this!
-* The file will change (i.e. the `app-ingress.yaml` file), depending on the app and what path you want to route to what endpoint (see [using externalIPs](#using-externalips)
+* The file will change (i.e. the `app-ingress.yaml` file), depending on the app and what path you want to route to what endpoint (see [using externalIPs](#using-externalips))
 
 ## Using ExternalIPs
 
