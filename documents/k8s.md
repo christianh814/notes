@@ -372,6 +372,8 @@ Content-Type: text/html; charset=UTF-8
 
 If you visit the IP of ANY node in the cluster on port 30000, you should see the app come up.
 
+Congrats! You have an HA k8s cluster up and running!
+
 # Miscellaneous Notes
 
 Notes in no paticular order
