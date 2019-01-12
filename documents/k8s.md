@@ -956,3 +956,63 @@ kubectl get ingress app2-ingress-exip -n test
 NAME                HOSTS                     ADDRESS   PORTS   AGE
 app2-ingress-exip   app2.192.168.1.8.nip.io             80      66s
 ```
+## Using nodeSelector
+
+I used `nodeSelector` under the `.spec.template.spec` path on the `ingress` namespace. Fist I got a good label that's already there. `hostname` seemed good to me.
+
+```
+# kubectl get pods nginx-ingress-controller-59bcb6c455-bjvn7 -n ingress -o wide
+NAME                                        READY   STATUS    RESTARTS   AGE   IP           NODE                    NOMINATED NODE   READINESS GATES
+nginx-ingress-controller-59bcb6c455-bjvn7   1/1     Running   0          15m   10.254.3.7   dhcp-host-8.cloud.chx   <none>           <none>
+```
+
+^ my controller is running on `dhcp-host-8.cloud.chx` let's keep it there...
+
+
+```
+# kubectl get nodes -l kubernetes.io/hostname=dhcp-host-8.cloud.chx
+NAME                    STATUS   ROLES    AGE    VERSION
+dhcp-host-8.cloud.chx   Ready    <none>   2d1h   v1.13.1
+```
+
+^ Based on this... `kubernetes.io/hostname=dhcp-host-8.cloud.chx` seems like a good choice
+
+
+I edited the `deployment` and added `nodeSelector` under `.spec.template.spec` snippet below...
+
+```
+[root@jumpbox ~]# kubectl get deployments nginx-ingress-controller -n ingress -o yaml | grep -C 10 containers
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nginx-ingress-lb
+    spec:
+      #-- I added this section here -- #
+      nodeSelector:
+        kubernetes.io/hostname: dhcp-host-8.cloud.chx
+      # ----------------------------- #
+      containers:
+      - args:
+        - /nginx-ingress-controller
+        - --default-backend-service=$(POD_NAMESPACE)/default-backend
+        - --configmap=$(POD_NAMESPACE)/nginx-ingress-controller-conf
+        - --v=2
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+```
+
+Now this pod will always be on this host that's my "infra" host
+
+```
+# kubectl get pods -n ingress nginx-ingress-controller-59bcb6c455-bjvn7 -o yaml | grep -A 1 nodeSelect
+  nodeSelector:
+    kubernetes.io/hostname: dhcp-host-8.cloud.chx
+```
