@@ -1,0 +1,364 @@
+# Preference
+
+I'm running this from the OpenShift master but you can run this anywhere that has `oc` and `docker` installed (I tried with `podman` but didn't work)
+
+
+# Download the quay yaml files
+
+```
+mkdir ./quaydeploy
+cd ./quaydeploy
+wget https://coreos.com/quay-enterprise/docs/latest/tectonic/files/quay-enterprise-namespace.yml
+wget https://coreos.com/quay-enterprise/docs/latest/tectonic/files/quay-enterprise-config-secret.yml
+wget https://coreos.com/quay-enterprise/docs/latest/tectonic/files/quay-enterprise-redis.yml
+wget https://coreos.com/quay-enterprise/docs/latest/tectonic/files/quay-enterprise-app-rc.yml
+wget https://coreos.com/quay-enterprise/docs/latest/tectonic/files/quay-enterprise-service-nodeport.yml
+wget https://coreos.com/quay-enterprise/docs/latest/tectonic/files/quay-enterprise-service-loadbalancer.yml
+wget https://coreos.com/quay-enterprise/docs/latest/tectonic/files/quay-servicetoken-role-k8s1-6.yaml
+wget https://coreos.com/quay-enterprise/docs/latest/tectonic/files/quay-servicetoken-role-binding-k8s1-6.yaml
+```
+
+# Create the project and allow for root containers
+
+before you start set this var to make things easier
+
+```
+ocproute=$(oc get routes -n default docker-registry -o jsonpath='{.spec.host}'  | cut -d'.' -f2-)
+```
+
+```
+oc login -u system:admin
+oc new-project quay-enterprise
+oc project quay-enterprise
+oc adm policy add-scc-to-user anyuid -z default -n quay-enterprise
+```
+
+# Set up secrets
+
+Set up secrets
+
+```
+oc create -f quay-enterprise-config-secret.yml
+docker login -u="coreos+rhcp" -p="redacted" quay.io # from https://access.redhat.com/solutions/3533201
+oc create secret generic coreos-pull-secret --from-file=".dockerconfigjson=~/.docker/config.json" --type='kubernetes.io/dockerconfigjson' -n quay-enterprise
+```
+
+# Create the role and the role bindings
+
+```
+oc create -f quay-servicetoken-role-k8s1-6.yaml
+oc create -f quay-servicetoken-role-binding-k8s1-6.yaml
+```
+
+# Add privs to the new role
+
+```
+oc adm policy add-scc-to-user anyuid system:serviceaccount:quay-enterpriseefault
+```
+
+# Deploy redis
+
+```
+oc create -f quay-enterprise-redis.yml
+```
+
+# Deploy quay
+
+```
+oc create -f quay-enterprise-app-rc.yml -f quay-enterprise-service-loadbalancer.yml
+oc expose svc quay-enterprise --name=quay --hostname=quay.${ocproute}
+```
+
+
+# Create database
+
+We are using postgresql because clair uses it too
+
+```
+oc new-app --name=postgresql -l app=postgresql --template=postgresql-persistent \
+--param=POSTGRESQL_USER=quay --param=POSTGRESQL_PASSWORD=quay --param=POSTGRESQL_DATABASE=quay
+```
+
+# Set up database
+
+Login
+
+```
+$ oc rsh $(oc get pods -l app=postgresql -o jsonpath='{.items[*].metadata.name}')
+```
+
+Verify admin pack is there (inside the pod)
+
+```
+sh-4.2$ echo "SELECT * FROM pg_available_extensions" | /opt/rh/rh-postgresql96/root/usr/bin/psql | grep admin
+ adminpack          | 1.1             |                   | administrative functions for PostgreSQL
+```
+
+
+create the needed extension
+
+```
+sh-4.2$ echo "CREATE EXTENSION pg_trgm" | /opt/rh/rh-postgresql96/root/usr/bin/psql
+CREATE EXTENSION
+```
+
+verify
+
+```
+sh-4.2$ echo "SELECT * FROM pg_extension" | /opt/rh/rh-postgresql96/root/usr/bin/psql | grep pg_trgm
+ pg_trgm |       10 |         2200 | t              | 1.3        |           |
+```
+
+
+While you're here create the clair database
+
+
+```
+sh-4.2$ echo "create database clair;" | /opt/rh/rh-postgresql96/root/usr/bin/psql
+CREATE DATABASE
+sh-4.2$ exit
+```
+
+make the `quay` user a superuser
+
+```
+sh-4.2$ echo "ALTER USER quay WITH SUPERUSER;" | /opt/rh/rh-postgresql96/root/usr/bin/psql
+ALTER ROLE
+```
+
+#  Deploy object storage
+
+Create minio. Make note of MINIO_ACCESS_KEY and MINIO_SECRET_KEY
+
+```
+cat <<EOF | oc create -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pv-claim
+  labels:
+    app: minio-storage-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: minio-deployment
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      volumes:
+      - name: storage
+        persistentVolumeClaim:
+          claimName: minio-pv-claim
+      containers:
+      - name: minio
+        image: minio/minio
+        args:
+        - server
+        - /storage
+        env:
+        - name: MINIO_ACCESS_KEY
+          value: "redacted"
+        - name: MINIO_SECRET_KEY
+          value: "redacted"
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - name: storage
+          mountPath: "/storage"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 9000
+      targetPort: 9000
+      protocol: TCP
+  selector:
+    app: minio
+EOF
+```
+
+expose svc
+
+```
+$ oc expose svc minio-service --name=minio --hostname=minio.${ocproute}
+route.route.openshift.io/minio-service exposed
+
+$ oc get routes minio
+NAME            HOST/PORT                                     PATH      SERVICES        PORT      TERMINATION   WILDCARD
+minio-service   minio.apps.192.168.1.26.nip.io             minio-service   9000                    None
+```
+
+
+create a bucket by visiting the URL or by using mc (example below)  # REQUIRED
+
+```
+wget https://dl.minio.io/client/mc/release/linux-amd64/mc -O /usr/local/bin/mc
+chmod +x /usr/local/bin/mc
+mc config host add minio http://minio.${ocproute} 9TASO40R2NWD2KL6PAIJ tIf9uaE44rzuxj4GMIw64Kogm7LG7MU755eBJld5
+mc mb minio/quay
+# Verify with
+mc ls minio
+```
+
+
+**** STOP HERE>>>>> SET UP QUAY HERE WITHOUT CLAIR...use the generate my own key method ****
+
+- Found https://coreos.com/quay-enterprise/docs/latest/security-scanning.html
+
+
+# Config clair
+
+
+**** THIS DOES NOT WORK ON OCP....the second method is required ****
+
+- Use the "Clair configuration: High availability" example file found https://coreos.com/quay-enterprise/docs/latest/clair.html
+
+create default clair config
+
+export stuff
+
+```
+export POSTGRES_CONNECTION_STRING="postgresql://quay:quay@postgresql:5432/clair?sslmode=disable"
+export QUAY_ENDPOINT=$(oc get svc quay-enterprise -o jsonpath='{.metadata.name'})
+export CLAIR_ENDPOINT=clair:6060
+export CLAIR_SERVICE_KEY_ID="do later"
+```
+
+```
+# FILE UPDATED ALREDY
+cat > clair-config.yaml <<EOF
+clair:
+  database:
+    type: pgsql
+    options:
+      # A PostgreSQL Connection string pointing to the Clair Postgres database.
+      # Documentation on the format can be found at: http://www.postgresql.org/docs/9.4/static/libpq-connect.html
+      source: ${POSTGRES_CONNECTION_STRING}
+      cachesize: 16384
+  api:
+    # The port at which Clair will report its health status. For example, if Clair is running at
+    # https://clair.mycompany.com, the health will be reported at
+    # http://clair.mycompany.com:6061/health.
+    healthport: 6061
+
+    port: 6062
+    timeout: 900s
+
+    # paginationkey can be any random set of characters. *Must be the same across all Clair instances*.
+    paginationkey: "XxoPtCUzrUv4JV5dS+yQ+MdW7yLEJnRMwigVY/bpgtQ="
+
+  updater:
+    # interval defines how often Clair will check for updates from its upstream vulnerability databases.
+    interval: 6h
+    notifier:
+      attempts: 3
+      renotifyinterval: 1h
+      http:
+        # QUAY_ENDPOINT defines the endpoint at which Quay is running.
+        # For example: https://myregistry.mycompany.com
+        endpoint: http://${QUAY_ENDPOINT}/secscan/notify
+        proxy: http://localhost:6063
+
+jwtproxy:
+  signer_proxy:
+    enabled: true
+    listen_addr: :6063
+    ca_key_file: /certificates/mitm.key # Generated internally, do not change.
+    ca_crt_file: /certificates/mitm.crt # Generated internally, do not change.
+    signer:
+      issuer: security_scanner
+      expiration_time: 5m
+      max_skew: 1m
+      nonce_length: 32
+      private_key:
+        type: preshared
+        options:
+	  key_id: ${CLAIR_SERVICE_KEY_ID}
+	  private_key_path: /secscanerpem/security_scanner.pem
+
+
+  verifier_proxies:
+  - enabled: true
+    # The port at which Clair will listen.
+    listen_addr: :6060
+
+    # If Clair is to be served via TLS, uncomment these lines. See the "Running Clair under TLS"
+    # section below for more information.
+    # key_file: /config/clair.key
+    # crt_file: /config/clair.crt
+
+    verifier:
+      # CLAIR_ENDPOINT is the endpoint at which this Clair will be accessible. Note that the port
+      # specified here must match the listen_addr port a few lines above this.
+      # Example: https://myclair.mycompany.com:6060
+      audience: http://${CLAIR_ENDPOINT}
+
+      upstream: http://localhost:6062
+      key_server:
+        type: keyregistry
+        options:
+          # QUAY_ENDPOINT defines the endpoint at which Quay is running.
+          # Example: https://myregistry.mycompany.com
+          registry: http://${QUAY_ENDPOINT}/keys/
+EOF
+```
+
+Create this as a configmap
+
+```
+oc create configmap clair-config --from-file="config.yaml=clair-config.yaml"
+oc create configmap security-scanner --from-file="security_scanner.pem=security_scanner.pem"
+```
+
+# Deploy Clair
+
+
+Pull down the latest clair
+
+```
+docker login -u="coreos+rhcp" -p="redacted" quay.io
+docker pull quay.io/coreos/clair-jwt:v2.0.0
+```
+
+Push it into openshift
+
+```
+docker login -u admin -p $(oc whoami -t) $(oc get route docker-registry -n default -o jsonpath='{.spec.host}')
+docker tag quay.io/coreos/clair-jwt:v2.0.0 $(oc get route docker-registry -n default -o jsonpath='{.spec.host}')/quay-enterprise/clair-jwt:v2.0.0
+docker push $(oc get route docker-registry -n default -o jsonpath='{.spec.host}')/quay-enterprise/clair-jwt:v2.0.0
+```
+
+Create the deployment
+
+```
+oc new-app --name=clair -l app=clair quay-enterprise/clair-jwt:v2.0.0
+```
+
+Set the config map
+
+```
+oc set volumes dc/clair --add --configmap-name=clair-config --type=configmap --mount-path=/config --overwrite
+oc set volumes dc/clair --add --configmap-name=security-scanner --type=configmap --mount-path=/secscanerpem
+```
+
+***** NOW GO INTO SETTINGS OF QUAY AND SETUP CLAIR ******
+
+
+
+
