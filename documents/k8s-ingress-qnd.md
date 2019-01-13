@@ -8,7 +8,7 @@ NAME                    STATUS   ROLES    AGE    VERSION
 dhcp-host-8.cloud.chx   Ready    <none>   3d4h   v1.13.1
 ```
 
-Export the value from the `kubernetes.io/hostname` key. And the DNS of what your nginx route is going to be
+Export the value from the `kubernetes.io/hostname` key. And the DNS of what your nginx route is going to be (**NOTE**, the DNS (a wildcard entry) must be pointed to the "infra" host)
 
 ```
 export INFRAHOST=dhcp-host-8.cloud.chx
