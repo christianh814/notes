@@ -152,7 +152,7 @@ ansible controllers -m shell -a "kubeadm config images pull"
 
 Pick one of the controllers (doesn't matter which one) and initialize the control plane with `kubeadm`. I used a config file since I was going through a loadbalancer. (Also note, if you're using Calico (like I was) you have to specify a `podSubnet` that's something other than `192.168.0.0/16`)
 
-I did the following on my first controller (in my case my LB was `192.168.1.97`)
+I did the following on my first controller (in the below example; the IP of my LB was `192.168.1.97`)
 
 ```
 LBIP=192.168.1.97
