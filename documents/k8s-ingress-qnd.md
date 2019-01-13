@@ -29,4 +29,4 @@ kubectl create namespace ingress
 kubectl create  -n ingress -f nginx-ingress.yaml
 ```
 
-Now you can create routes back at the [k8s document](k8s.md)
+Now you can create routes back at the [k8s document](k8s.md#create-a-route)
