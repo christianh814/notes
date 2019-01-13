@@ -85,8 +85,8 @@ spec:
             timeoutSeconds: 5
           args:
             - /nginx-ingress-controller
-            - --default-backend-service=\$(POD_NAMESPACE)/default-backend
-            - --configmap=\$(POD_NAMESPACE)/nginx-ingress-controller-conf
+            - --default-backend-service=$(POD_NAMESPACE)/default-backend
+            - --configmap=$(POD_NAMESPACE)/nginx-ingress-controller-conf
             - --v=2
           env:
             - name: POD_NAME
