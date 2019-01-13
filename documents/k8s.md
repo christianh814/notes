@@ -377,6 +377,8 @@ Right now, I have a cluster up and running and can deploy apps and use `nodePort
 
 You can have k8s "manage" your LB with an `ingress controller`. There are many out there but it seems like nginx is the most popular one. Let's get one up and running!
 
+(If you just need to "get one up and running" [look here](k8s-ingress-qnd.md))
+
 We will be using the `test` namespace we created during the [smoke test](#smoke-test). Clean it up if you wish
 
 ```
