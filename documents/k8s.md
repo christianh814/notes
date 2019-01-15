@@ -308,7 +308,7 @@ Next, deploy a pod and a service to this namespace
 
 ```
 cat <<EOF | kubectl apply -n test -f -
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: welcome-php
