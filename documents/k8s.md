@@ -344,26 +344,24 @@ EOF
 Check to see if your pods and svc is up
 
 ```
-kubectl get pods -n test
+$ kubectl get pods -n test
 NAME                           READY   STATUS    RESTARTS   AGE
-welcome-php-77f6d8845b-mnv4r   1/1     Running   0          76s
+welcome-php-77f6d8845b-n2g92   1/1     Running   0          12s
 
-kubectl get svc -n test
-NAME          TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-welcome-php   NodePort   172.30.67.197   <none>        8080:30000/TCP   81s
+$ kubectl get svc -n test
+NAME          TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+welcome-php   ClusterIP   172.30.110.181   <none>        8080/TCP   38s
 ```
 
 Curling the svc address should get you that 200
 
 ```
-curl -sI 172.30.67.197:8080
+$ curl -sI 172.30.110.181:8080
 HTTP/1.1 200 OK
-Date: Thu, 10 Jan 2019 01:36:08 GMT
+Date: Tue, 15 Jan 2019 16:10:11 GMT
 Server: Apache/2.4.27 (Red Hat) OpenSSL/1.0.1e-fips
 Content-Type: text/html; charset=UTF-8
 ```
-
-If you visit the IP of ANY node in the cluster on port 30000, you should see the app come up.
 
 Congrats! You have an HA k8s cluster up and running!
 
