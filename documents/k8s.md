@@ -308,7 +308,7 @@ Next, deploy a pod and a service to this namespace
 
 ```
 cat <<EOF | kubectl apply -n test -f -
-apiVersion: apps/v1beta1
+apiVersion: v1
 kind: Deployment
 metadata:
   name: welcome-php
@@ -331,16 +331,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: welcome-php
-  labels:
-    app: welcome-php
 spec:
-  type: NodePort
-  ports:
-    - port: 8080
-      nodePort: 30000
-      name: http
   selector:
     app: welcome-php
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
 EOF
 ```
 
