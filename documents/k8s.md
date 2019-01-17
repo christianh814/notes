@@ -511,11 +511,15 @@ Now this pod will always be on this host that's my "infra" host
 To see what context you're using (which "namespace" you're on) run
 
 ```
-# kubectl config current-context
-default/192-168-1-97:6443/
+# kubectl config get-contexts 
+CURRENT   NAME                          CLUSTER             AUTHINFO             NAMESPACE
+*         default/192-168-1-97:6443/    192-168-1-97:6443   /192-168-1-97:6443   default
+          ingress/192-168-1-97:6443/    192-168-1-97:6443   /192-168-1-97:6443   ingress
+          kubernetes-admin@kubernetes   kubernetes          kubernetes-admin     
+          test/192-168-1-97:6443/       192-168-1-97:6443   /192-168-1-97:6443   test
 ```
 
-This shows me that my `default` connection is on that `server:port` mapping. To switch to another project (say the `ingress` project)...
+This shows me the current context I'm in. I am using server `default/192-168-1-97:6443/` and on namespace `default`. To switch to another project (say the `ingress` project)...
 
 ```
 # kubectl config set-context --current --namespace=ingress
@@ -525,9 +529,15 @@ Context "default/192-168-1-97:6443/" modified.
 Now every `kubectl` command will be in the context of the `ingress` namespace. To verify this run
 
 ```
-# kubectl config view | grep namespace: | head -1
-    namespace: ingress
+# kubectl config get-contexts 
+CURRENT   NAME                          CLUSTER             AUTHINFO             NAMESPACE
+*         default/192-168-1-97:6443/    192-168-1-97:6443   /192-168-1-97:6443   ingress
+          ingress/192-168-1-97:6443/    192-168-1-97:6443   /192-168-1-97:6443   ingress
+          kubernetes-admin@kubernetes   kubernetes          kubernetes-admin     
+          test/192-168-1-97:6443/       192-168-1-97:6443   /192-168-1-97:6443   test
 ```
+
+As you see the `NAMESPACE` feild says I'm in `ingress` now.
 
 To switch back and verify
 
@@ -535,6 +545,10 @@ To switch back and verify
 # kubectl config set-context --current --namespace=default
 Context "default/192-168-1-97:6443/" modified.
 
-# kubectl config view | grep namespace: | head -1
-    namespace: default
+# kubectl config get-contexts 
+CURRENT   NAME                          CLUSTER             AUTHINFO             NAMESPACE
+*         default/192-168-1-97:6443/    192-168-1-97:6443   /192-168-1-97:6443   default
+          ingress/192-168-1-97:6443/    192-168-1-97:6443   /192-168-1-97:6443   ingress
+          kubernetes-admin@kubernetes   kubernetes          kubernetes-admin     
+          test/192-168-1-97:6443/       192-168-1-97:6443   /192-168-1-97:6443   test
 ```
