@@ -505,3 +505,36 @@ Now this pod will always be on this host that's my "infra" host
   nodeSelector:
     kubernetes.io/hostname: dhcp-host-8.cloud.chx
 ```
+
+## Switching context
+
+To see what context you're using (which "namespace" you're on) run
+
+```
+# kubectl config current-context
+default/192-168-1-97:6443/
+```
+
+This shows me that my `default` connection is on that `server:port` mapping. To switch to another project (say the `ingress` project)...
+
+```
+# kubectl config set-context --current --namespace=ingress
+Context "default/192-168-1-97:6443/" modified.
+```
+
+Now every `kubectl` command will be in the context of the `ingress` namespace. To verify this run
+
+```
+# kubectl config view | grep namespace: | head -1
+    namespace: ingress
+```
+
+To switch back and verify
+
+```
+# kubectl config set-context --current --namespace=default
+Context "default/192-168-1-97:6443/" modified.
+
+# kubectl config view | grep namespace: | head -1
+    namespace: default
+```
