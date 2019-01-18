@@ -3,6 +3,7 @@
 * [KSH Notes](#ksh-notes)
 * [Misc Commands](#misc-commands)
 * [OpenVPN](#openvpn)
+* [Sendgrid](#sendgrid)
 
 ## KSH Notes
 
@@ -496,3 +497,18 @@ openvpn --config remote-network.ovpn --daemon
 ```
 
 You might have to edit your `/etc/resolv.conf` in order to see that network's servers by name.
+
+## Sendgrid
+
+You can `curl` sendgrid with the following example
+
+```
+curl --request POST \
+  --url https://api.sendgrid.com/v3/mail/send \
+  --header 'Authorization: Bearer YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{"personalizations": [{"to": [{"email": "recipient@example.com"}]}],"from": {"email": "sendeexampexample@example.com"},"subject": "Hello, World!","content": [{"type": "text/plain", "value": "Heya!"}]}'
+```
+You can also do `--data @/path/to/file.json`. You can use `envsubst` to substitute variables within this json file in scripts (I had to use `export key=val` within the script to get it to work)
+
+More info can be found on the [Sendgrid website](https://sendgrid.com/docs/for-developers/sending-email/curl-examples/)
