@@ -552,3 +552,74 @@ CURRENT   NAME                          CLUSTER             AUTHINFO            
           kubernetes-admin@kubernetes   kubernetes          kubernetes-admin     
           test/192-168-1-97:6443/       192-168-1-97:6443   /192-168-1-97:6443   test
 ```
+
+## Helm
+
+There are two parts to Helm: The Helm client (`helm`) and the Helm server (`Tiller`).
+
+Helm helps you manage Kubernetes applications. Helm Charts helps you define, install, and upgrade complex Kubernetes applications.
+
+This is a "quick start" (for more complex/secure setups visit the [official docs](https://docs.helm.sh/using_helm))
+
+
+First install the latest [stable release](https://github.com/helm/helm/releases)
+
+
+```
+wget https://raw.githubusercontent.com/helm/helm/master/scripts/get -O get-helm.sh
+bash get-helm.sh
+```
+
+Set up bash completion for easier use
+
+```
+source <(helm completion bash)
+```
+
+Verify it's installed
+
+```
+helm version --client
+```
+
+Install `tiller` with `helm init`. But remember to create a service account
+
+```
+kubectl create serviceaccount --namespace kube-system tiller
+kubectl create clusterrolebinding tiller-cluster-rule \
+--clusterrole=cluster-admin \
+--serviceaccount=kube-system:tiller
+helm init --service-account tiller
+```
+
+Now install a sample chart. First, get a fresh list of the repo
+
+```
+helm repo update
+```
+
+Now let's install a sample helm chart of mysql
+
+```
+kubectl create namespace test-mysql
+helm install stable/mysql --namespace test-mysql
+```
+
+See the status of what you have deployed
+
+```
+helm  ls
+```
+
+Deleting is done by name so first get the name and delete it based on that name
+
+```
+helm ls --short
+helm delete deadly-dachshund
+```
+
+Get the status
+
+```
+helm status deadly-dachshund
+```
