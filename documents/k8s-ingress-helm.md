@@ -42,8 +42,7 @@ __For cloud clusters__
 ```
 helm install --name nginx-ingress stable/nginx-ingress --namespace ingress \
 --set rbac.create=true --set controller.image.pullPolicy="Always" \
---set controller.nodeSelector.nginx="ingresshost" --set controller.stats.enabled=true \
---set controller.hostNetwork=true
+--set controller.nodeSelector.nginx="ingresshost" --set controller.stats.enabled=true 
 ```
 
 Export the stats page if you wish (make sure the `svc` name and the `port`are right)
