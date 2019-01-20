@@ -372,6 +372,7 @@ This was a big section so I broke it out depending on your level of knowladge/in
 
 * [Detailed Instructions](k8s-ingress.md) - Step by step with explanations
 * [Quick and Dirty](k8s-ingress-qnd.md) - Just get's you up and running
+* [With Helm](k8s-ingress-helm.md) - Like the QnD method, but with [helm](#helm)
 
 # Miscellaneous Notes
 
