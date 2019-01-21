@@ -61,21 +61,7 @@ EOF
 
 __For cloud clusters__
 
-First I created the `values.yaml` file
-
-```
-cat > values.yaml <<EOF
-controller:
-  replicaCount: 1
-  config:
-    use-proxy-protocol: "true"
-  service:
-    annotations:
-      service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: '*'
-EOF
-```
-
-Then I ran this `helm` command to install it
+First I ran this `helm` command to install it
 
 ```
 helm install --name nginx-ingress stable/nginx-ingress --namespace ingress \
