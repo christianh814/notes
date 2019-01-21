@@ -28,7 +28,6 @@ kubectl create namespace ingress
 
 Using this information; I will deploy the `nginx-ingress` helm chart; giving it the name `nginx-ingress`. List of all options can be found on the [github page](https://github.com/helm/charts/tree/master/stable/nginx-ingress#configuration)
 
-__For Internal clusters__
 ```
 helm install --name nginx-ingress stable/nginx-ingress --namespace ingress \
 --set rbac.create=true --set controller.image.pullPolicy="Always" \
@@ -38,12 +37,7 @@ helm install --name nginx-ingress stable/nginx-ingress --namespace ingress \
 
 ^ Pay close attention to `controller.nodeSelector`...the syntax is `controller.nodeSelector.<key>="<value>"` ...note the use of the dot instead of an `=`. Also note that `controller.service.externalIPs` is an array
 
-__For cloud clusters__
-```
-helm install --name nginx-ingress stable/nginx-ingress --namespace ingress \
---set rbac.create=true --set controller.image.pullPolicy="Always" \
---set controller.nodeSelector.nginx="ingresshost" --set controller.stats.enabled=true 
-```
+
 
 Export the stats page if you wish (make sure the `svc` name and the `port`are right)
 
@@ -63,6 +57,33 @@ spec:
           servicePort: 18080
         path: /nginx_status
 EOF
+```
+
+__For cloud clusters__
+
+First I created an ELB pointing to the host on ports `` and ``
+
+Then I created the `values.yaml` file
+
+```
+cat > values.yaml <<EOF
+controller:
+  replicaCount: 1
+  config:
+    use-proxy-protocol: "true"
+  service:
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: '*'
+EOF
+```
+
+Then I ran this `helm` command to install it
+
+```
+helm install --name nginx-ingress stable/nginx-ingress --namespace ingress \
+--set rbac.create=true --set controller.image.pullPolicy="Always" \
+--set controller.nodeSelector.nginx="ingresshost" --set controller.stats.enabled=true \
+-f values.yaml
 ```
 
 # Cert Manager for TLS
