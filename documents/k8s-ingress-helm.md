@@ -61,7 +61,7 @@ EOF
 
 __For cloud clusters__
 
-First I created an ELB pointing to the host on ports `` and ``
+First I created an ELB pointing to the host on the `nodePort` ports
 
 Then I created the `values.yaml` file
 
@@ -83,7 +83,7 @@ Then I ran this `helm` command to install it
 helm install --name nginx-ingress stable/nginx-ingress --namespace ingress \
 --set rbac.create=true --set controller.image.pullPolicy="Always" \
 --set controller.nodeSelector.nginx="ingresshost" --set controller.stats.enabled=true \
--f values.yaml
+--set controller.service.type=NodePort --set controller.service.externalTrafficPolicy=Local -f values.yaml
 ```
 
 # Cert Manager for TLS
