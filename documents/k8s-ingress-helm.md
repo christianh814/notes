@@ -112,10 +112,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - welcome-php.107.185.133.135.nip.io
+    - welcome-php.8.8.8.8.nip.io
     secretName: welcome-php-tls
   rules:
-  - host: welcome-php.107.185.133.135.nip.io
+  - host: welcome-php.8.8.8.8.nip.io
     http:
       paths:
       - backend:
