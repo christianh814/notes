@@ -59,19 +59,6 @@ spec:
 EOF
 ```
 
-__For cloud clusters__
-
-First I ran this `helm` command to install it
-
-```
-helm install --name nginx-ingress stable/nginx-ingress --namespace ingress \
---set rbac.create=true --set controller.image.pullPolicy="Always" \
---set controller.nodeSelector.nginx="ingresshost" --set controller.stats.enabled=true \
---set controller.service.type=NodePort --set controller.service.externalTrafficPolicy=Local -f values.yaml
-```
-
-Then I created an ELB pointing to the host on the `nodePort` ports
-
 # Cert Manager for TLS
 
 ** WIP **
