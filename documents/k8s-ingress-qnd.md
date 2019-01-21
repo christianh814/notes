@@ -13,6 +13,7 @@ Export the value from the `kubernetes.io/hostname` key. And the DNS of what your
 ```
 export INFRAHOST=dhcp-host-8.cloud.chx
 export NGINXROUTE=nginx.192.168.1.8.nip.io
+export EXIP=$(dig ${INFRAHOST} +short)
 ```
 
 Get the template and replace the two values
