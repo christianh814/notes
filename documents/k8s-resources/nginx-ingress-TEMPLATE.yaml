@@ -192,7 +192,7 @@ metadata:
   name: nginx-ingress-exip
 spec:
   externalIPs:
-  - 192.168.1.8
+  - ${EXIP}
   ports:
     - port: 80
       name: http
