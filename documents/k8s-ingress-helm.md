@@ -128,7 +128,7 @@ EOF
 ^ **Note** the annotations! 
 
 ```
-# kubectl create -n test -f welcome-php-ingress.yaml
+# kubectl create -f welcome-php-ingress.yaml
 ```
 
 **NOTE** The routes have to live where the cert issuer is (as of this writing)
