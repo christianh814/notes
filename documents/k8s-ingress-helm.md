@@ -59,9 +59,18 @@ spec:
 EOF
 ```
 
-# Cert Manager for TLS
+# TLS
 
-**NOTE** This was done with an "internal" cluster with the ingress exported to the internet
+The following sets up `nginx-ingress` with `cert-bot` for getting/updating ssl certs using [letsencrypt](https://letsencrypt.org/). Note the following two "gotchas"
+
+* These steps worked on a cluster installed with [kops on aws](k8s-kops.md)
+* These steps worked on an "internal" cluster with the "infra" node exposed to the internet on `80` and `443`
+
+# Install Nginx Ingress
+
+If you're installing nginx "internall" the [above installation with helm](#ingress-install-with-helm)
+
+## Cert Manager
 
 
 First thing to do, is use `helm` to install it
@@ -70,7 +79,7 @@ First thing to do, is use `helm` to install it
 $ helm install stable/cert-manager
 ```
 
-Create a  `cluster issuer` yaml
+Create a  `cluster issuer` yaml. Replace the email with a valid email address
 
 ```
 # cat <<EOF > clusterissuer.yaml
@@ -95,7 +104,7 @@ Create this in your env
 kubectl create -f clusterissuer.yaml
 ```
 
-Create your route file
+Create your ingress config yaml
 
 ```
 # cat <<EOF > welcome-php-ingress.yaml
@@ -125,8 +134,10 @@ spec:
 EOF
 ```
 
-^ **Note** the annotations! 
+^ **Note** the annotations! Get the `cluster-issuer` name with `kops get cluster`
 
 ```
 # kubectl create -n test -f welcome-php-ingress.yaml
 ```
+
+Viola! You have a valid cert with letsencrypt (that will autorenew too!)
