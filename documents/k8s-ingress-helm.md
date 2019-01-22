@@ -151,7 +151,7 @@ spec:
 EOF
 ```
 
-^ **Note** the annotations! Get the `cluster-issuer` name with `kops get cluster`
+^ **Note** the annotations! Get the `cluster-issuer` name with `kubectl get clusterissuer`
 
 ```
 # kubectl create -n test -f welcome-php-ingress.yaml
