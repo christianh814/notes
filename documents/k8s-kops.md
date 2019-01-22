@@ -66,6 +66,14 @@ EOF
 
 ## Install On AWS
 
+Before you install, set some configs on your bucket storage
+
+```
+aws s3api put-bucket-versioning --bucket my-bucket-name --versioning-configuration Status=Enabled
+aws s3api put-bucket-encryption --bucket my-bucket-name \
+--server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
+```
+
 From a high level, first set your cluster config
 
 ```
@@ -87,6 +95,12 @@ This sets up a config that you can edit further if you made a mistake above
 
 ```
 kops edit cluster kube.my.domain.com
+```
+
+**NOTE** You can change the image (by default Debian) by using `--image`...the below example lists CentOS images
+
+```
+aws ec2 describe-images --region=us-west-2 --filters Name=product-code,Values=aw0evgkw8e5c1q413zgy5pjce
 ```
 
 To "install" the cluster..."update" your aws account with the state saved in s3...
