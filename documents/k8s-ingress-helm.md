@@ -153,6 +153,8 @@ EOF
 
 ^ **Note** the annotations! Get the `cluster-issuer` name with `kubectl get clusterissuer`
 
+Create the ingress object for the app
+
 ```
 # kubectl create -n test -f welcome-php-ingress.yaml
 ```
