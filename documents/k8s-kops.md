@@ -87,7 +87,9 @@ kops create cluster \
     --master-size t2.medium \
     --networking calico \
     --ssh-public-key ~/.ssh/id_rsa.pub \
-    --state=s3://my-bucket-name \
+    --state s3://my-bucket-name \
+    --api-loadbalancer-type public \
+    --image "aws-marketplace/CentOS Linux 7 x86_64 HVM EBS ENA 1805_01-b7ee8a69-ee97-4a49-9e68-afaee216db2e-ami-77ec9308.4" \
     kube.my.domain.com
 ```
 
