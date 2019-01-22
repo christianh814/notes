@@ -5,7 +5,7 @@ These are notes in no paticular oder (it is mostly focused on installation)
 * [Installing with Kubeadm](#kubernetes-installation)
 * [Installing in the cloud with Kops](k8s-kops.md)
 * [Ingress](#ingress)
-* [Misc](#miscellaneous-notes)
+* [Miscellaneous](#miscellaneous-notes)
 
 # Kubernetes Installation
 
