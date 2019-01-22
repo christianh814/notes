@@ -68,10 +68,25 @@ The following sets up `nginx-ingress` with `cert-bot` for getting/updating ssl c
 
 # Install Nginx Ingress
 
-If you're installing nginx "internall" the [above installation with helm](#ingress-install-with-helm)
+If you're installing nginx "internall" the [above installation with helm](#ingress-install-with-helm) should work just fine. Just pay attention to your `nodeSelector` and you're targeting your "exposed" node.
+
+**CLOUD** 
+
+After installing with [kops](k8s-kops.md), I did an `init` with [helm](k8s.md#helm). Then I did a simple install like this
+
+```
+helm install --name nginx-ingress stable/nginx-ingress \
+--namespace ingress --set rbac.create=true --set controller.image.pullPolicy="Always"
+```
+
+The above automatically creates a Network `ELB` on `80` and `443` passing through to the NGINX ingress controller (that then sends that traffic to the pods). I took the `ELB` DNS name...
+
+```
+$ kubectl get svc nginx-ingress-controller -n ingress -o jsonpath='{.status.loadBalancer.ingress[0].hostname}{"\n"}'
+```
+Then I created a Route53 wildcard entry `*.apps.my.cluster.com` that CNAMEs to that ELB.
 
 ## Cert Manager
-
 
 First thing to do, is use `helm` to install it
 
