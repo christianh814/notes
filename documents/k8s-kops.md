@@ -98,7 +98,7 @@ kops update cluster kube.my.domain.com --yes
 This creates a `~/.kube/config` file for you...verify with...
 
 ```
-$ k get nodes
+$ kubectl get nodes
 NAME                                          STATUS   ROLES    AGE   VERSION
 ip-172-20-121-13.us-west-2.compute.internal   Ready    master   2h    v1.11.6
 ip-172-20-126-35.us-west-2.compute.internal   Ready    node     2h    v1.11.6
