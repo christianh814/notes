@@ -68,6 +68,8 @@ The following sets up `nginx-ingress` with `cert-bot` for getting/updating ssl c
 
 # Install Nginx Ingress
 
+**LOCAL**
+
 If you're installing nginx "internall" the [above installation with helm](#ingress-install-with-helm) should work just fine. Just pay attention to your `nodeSelector` and you're targeting your "exposed" node.
 
 **CLOUD** 
