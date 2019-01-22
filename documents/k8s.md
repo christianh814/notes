@@ -1,3 +1,12 @@
+# Kuberentes Notes
+
+These are notes in no paticular oder (it is mostly focused on installation)
+
+* [Installing with Kubeadm](#kubernetes-installation)
+* [Installing in the cloud with Kops](k8s-kops.md)
+* [Ingress](#ingress)
+* [Misc](#miscellaneous-notes)
+
 # Kubernetes Installation
 
 This guide will show you how to "easily" (as easy as possible) install a Multimaster system. You can also modify this to have a similer one contoller/one node setup (steps are almost exactly the same).
@@ -13,8 +22,6 @@ This is broken off into sections
 * [Bootstrap Remaining Controllers](#bootstrap-remaining-controllers)
 * [Bootstrap Worker Nodes](#bootstrap-worker-nodes)
 * [Smoke Test](#smoke-test)
-* [Ingress](#ingress)
-* [Misc](#miscellaneous-notes)
 
 # Prerequisites And Assumptions
 
