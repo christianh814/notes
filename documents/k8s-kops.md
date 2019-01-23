@@ -55,12 +55,7 @@ EOF
 Test it...this should return your identity
 
 ```
-mkdir ~/.aws
-cat << EOF >>  ~/.aws/credentials
-[default]
-aws_access_key_id = YOURACCESSKEY
-aws_secret_access_key = YOURSECRETACCESSKEY
-EOF
+aws sts get-caller-identity
 ```
 
 ## Install On AWS
