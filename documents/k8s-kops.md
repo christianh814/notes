@@ -7,7 +7,6 @@ With `kops` you can spin up a cluster in aws, gce, and digital ocean. These are 
 Keep these in mind
 
 * I delegated a subdomain to route53
-  * With an HA install...it uses RR DNS for the api
 * I created a bucket on S3 via the webui under `us-east-1`
   * Haven't tested it otherwise
 * These are highlevel; consult the [kops aws docs](https://github.com/kubernetes/kops/blob/master/docs/aws.md) and the [kops ha docs](https://github.com/kubernetes/kops/blob/master/docs/high_availability.md#advanced-example)
