@@ -561,6 +561,106 @@ CURRENT   NAME                          CLUSTER             AUTHINFO            
           test/192-168-1-97:6443/       192-168-1-97:6443   /192-168-1-97:6443   test
 ```
 
+## Create Users
+
+This is HIGH high level (more to come soon). First create a ns for this user
+
+```
+kubectl create ns lsf158
+```
+
+Generate key and get base64 of the csr
+
+```
+openssl genrsa -out user1.key 2048
+openssl req -new -key user1.key -out user1.csr -subj "/CN=user1/O=kusers"\n
+base64 -w0 < user1.csr
+```
+
+Create a `CertificateSigningRequest` with that base64
+
+```
+apiVersion: certificates.k8s.io/v1beta1
+kind: CertificateSigningRequest
+metadata:
+  name: user1-csr
+spec:
+  groups:
+  - system:authenticated
+  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1p6Q0NBVThDQVFBd0lqRU9NQXdHQTFVRUF3d0ZkWE5sY2pFeEVEQU9CZ05WQkFvTUIydDFjMlZ5YzI0dwpnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUtBb0lCQVFEWDJzWFVrMFdyMkdwcmR0b3hVWUt6Cml5dC9PbThtRDNWZGJJQWI1b2s4ZmtWNVZjVzlJRUNveDdkQnFURGMzWFdvUERnQW5oZy9qREJUK0o4SnpoNWQKMWVIY2twWVJPcjFnMlVlWGdrOHVid2UyZWprVVQ5enlHNjNyL20zR3M3V0c2Q3ViQUNvL1k2RmdDU09yNnVJUQpidDhWZGNMUmt5aWhqYWxiK1JyNTZMS2Y5VUNKNmpNSnhvWElBVTNRQmNQN2I1WWs4R2p3Q0JzckxHZE9vODkzClA1YUczUDBad1JVL2M4d0VWTVIxc2doWFhkbVdwa2dFaTlMcDlFUVAzMWJkZWWWYmJodDBWeGxRank4N0I4NDUKSStNMEtrTndkNTR1OTJFT2hkREJ6Vy9GaEZKTUNhSFYrUnNjWUw0KzlCbEZXUkoyOS9WNUFOSlVFTTR2bkhTLwpBZ01CQUFHZ0FEQU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FRRUFnZ2FwbzBKVzR0c2lnTDliMzRpUWN0a0tzbkQvCkJrOGNzb2RMb2h3Q3hqQ1lyMUF6elo2OXpEKzJqSStnOUJ1WnY5cEcvVW41ZE9YT3VwbXlrQ0FwVkxmR0pjZzcKNjRTWVcrNnFQZVorRWlXYUxheHByR3kwelV1ZytFNXZsMjV6VVdBYjQzZVVpM2dFcHNETzJneVlBazJmNHBaaAptU2VFYXM1NzJhTmxvZVZ2ZjhNRkpPbGd3ekY0MDg1Yk1vWmFpRWEzdW9nNHJBaFIyEXAMPLEvNEFCbXM1b2V2CmdoMVJkbEFxSHZvcmZEMXpwRWFQUnhqbEpuU05lclEzeXQ3bzlyN1JIWG5OcW9Kd09pTjl5UmJWQmFSNWc4c3gKS0F0cElENWJVVFlLTkxsUjQ3TmtFL29HZHFNNCt5eWhJYStMMDk3dkxGd1l2cmsrempLMXNQZlQrdz09Ci0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
+  usages:
+  - digital signature
+  - key encipherment
+  - client oauth
+```
+
+Load it up it'll go into a pending state...approve the csr
+
+```
+kubectl create -f sig-req.yaml 
+kubectl get csr
+kubectl certificate approve user1-csr
+```
+
+Cet the `crt` file for the user
+
+```
+kubectl get csr user1-csr -o jsonpath='{.status.certificate}' | base64 --decode > user1.crt
+```
+
+Set the context for this user (user `kubectl config view` to get info afterwards)
+
+```
+kubectl config set-context user1 --context=k8s.example.com --cluster=k8s.example.com --namespace=lfs158 --user=user1
+```
+
+Create a role
+
+```
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: lfs158
+  name: pod-reader
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "watch", "list"]
+```
+
+Create the role binding
+
+```
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: pod-read-access
+  namespace: lfs158
+subjects:
+- kind: User
+  name: user1
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+```
+
+Load these bad boys up
+
+```
+kubectl create  -f role.yaml
+kubectl create -f rolebinding.yaml
+```
+
+The user can now see the pods
+
+```
+kubectl --context=user1 get pods -n lfs158
+```
+
+More details TK
+
 ## Helm
 
 There are two parts to Helm: The Helm client (`helm`) and the Helm server (`Tiller`).
