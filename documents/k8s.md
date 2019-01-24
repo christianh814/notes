@@ -561,6 +561,29 @@ CURRENT   NAME                          CLUSTER             AUTHINFO            
           test/192-168-1-97:6443/       192-168-1-97:6443   /192-168-1-97:6443   test
 ```
 
+## Setup kubeconfig
+
+In short, use `kubectl` to create a `kubeconfig` file for you
+
+```
+kubectl config set-cluster --help
+```
+
+Example
+
+```
+  kubectl config set-cluster ${NAMEOFCLUSTER} \
+    --certificate-authority=ca.pem \
+    --embed-certs=true \
+    --server=https://${KUBERNETES_PUBLIC_ADDRESS}:6443 \
+    --kubeconfig=${NAMEOFUSER}.kubeconfig
+```
+
+* `--certificate-authority` the signer CA for the cluster
+* `--embed-certs` embed the cert in the config
+* `--server` the k8s master server (or it's LB)
+* `--kubeconfig`  the config to write out
+
 ## Create Users
 
 This is HIGH high level (more to come soon). First create a ns for this user
