@@ -192,7 +192,7 @@ When the bootstrapping finishes; you should see a message like the following. SA
 kubeadm join <lb ip>:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash>
 ```
 
-Next, install a CNI compliant SDN. I used Calico since it was the easiest. First wget them
+Next, install a CNI compliant SDN. I used Calico since it was the easiest (always look to [the doc](https://kubernetes.io/docs/setup/independent/create-cluster-kubeadm/#pod-network) for the latest yamls). First wget them
 
 ```
 curl -O https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
