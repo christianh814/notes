@@ -26,6 +26,10 @@ I want to install this in the `ingress` namespace; so I'll create it
 kubectl create namespace ingress
 ```
 
+If you haven't already, this is where you would ini helm. [Instuctions here](k8s.md#helm)
+
+**NOW...**
+
 Using this information; I will deploy the `nginx-ingress` helm chart; giving it the name `nginx-ingress`. List of all options can be found on the [github page](https://github.com/helm/charts/tree/master/stable/nginx-ingress#configuration)
 
 ```
