@@ -92,6 +92,8 @@ This sets up a config that you can edit further if you made a mistake above
 kops edit cluster kube.my.domain.com
 ```
 
+> You may or maynot need `--master-count` since you are specifying `--master-zones`
+
 **NOTE** You can change the image (by default Debian) by using `--image`...the below example lists CentOS images (STILL experemental)
 
 ```
