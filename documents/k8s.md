@@ -311,41 +311,16 @@ First create a namespace
 kubectl create namespace test
 ```
 
-Next, deploy a pod and a service to this namespace
+Next, create a deployment with a test image
 
 ```
-cat <<EOF | kubectl apply -n test -f -
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: welcome-php
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: welcome-php
-    spec:
-      containers:
-        - image: "quay.io/redhatworkshops/welcome-php:latest"
-          imagePullPolicy: Always
-          name: welcome-php
-          ports:
-            - containerPort: 8080
-EOF
-cat <<EOF | kubectl apply -n test -f -
-apiVersion: v1
-kind: Service
-metadata:
-  name: welcome-php
-spec:
-  selector:
-    app: welcome-php
-  ports:
-  - protocol: TCP
-    port: 8080
-    targetPort: 8080
-EOF
+kubectl create deployment welcome-php -n test --image=quay.io/redhatworkshops/welcome-php
+```
+
+Expose the deployment to create a service to this pod
+
+```
+kubectl expose deployment/welcome-php -n test --port=8080 --target-port=8080
 ```
 
 Check to see if your pods and svc is up
