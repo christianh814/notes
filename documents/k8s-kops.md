@@ -7,8 +7,8 @@ With `kops` you can spin up a cluster in aws, gce, and digital ocean. These are 
 Keep these in mind
 
 * I delegated a subdomain to route53
-* I created a bucket on S3 via the webui under `us-east-1`
-  * Haven't tested it otherwise
+* I set up the `aws` cli on my local box
+* I used an IAM account with pretty wide access
 * These are highlevel; consult the [kops aws docs](https://github.com/kubernetes/kops/blob/master/docs/aws.md) and the [kops ha docs](https://github.com/kubernetes/kops/blob/master/docs/high_availability.md#advanced-example)
 * Use `kops --help` ...it's well documented
 
@@ -60,9 +60,10 @@ aws sts get-caller-identity
 
 ## Install On AWS
 
-Before you install, set some configs on your bucket storage
+Before you install, create your bucket, and set some configs on your bucket storage
 
 ```
+aws s3 mb s3://my-bucket-name --region us-east-1
 aws s3api put-bucket-versioning --bucket my-bucket-name --versioning-configuration Status=Enabled
 aws s3api put-bucket-encryption --bucket my-bucket-name \
 --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
