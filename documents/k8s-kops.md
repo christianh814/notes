@@ -74,7 +74,6 @@ From a high level, first set your cluster config
 ```
 kops create cluster \
     --node-count 3 \
-    --master-count 3 \
     --zones us-west-2a,us-west-2b,us-west-2c \
     --master-zones us-west-2a,us-west-2b,us-west-2c \
     --dns-zone my.domain.com \
@@ -93,7 +92,7 @@ This sets up a config that you can edit further if you made a mistake above
 kops edit cluster kube.my.domain.com
 ```
 
-> You may or maynot need `--master-count` since you are specifying `--master-zones`
+> You may `--master-count 3` if youre an in a region with only 2 AZ
 
 **NOTE** You can change the image (by default Debian) by using `--image`...the below example lists CentOS images (STILL experemental)
 
