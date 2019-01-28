@@ -97,8 +97,10 @@ Then I created a Route53 wildcard entry `*.apps.my.cluster.com` that CNAMEs to t
 First thing to do, is use `helm` to install it
 
 ```
-$ helm install --name=cert-manager stable/cert-manager
+$ helm install --name=cert-manager stable/cert-manager --version v0.5.2
 ```
+
+> As of right now there are issues with the latest v0.6.0
 
 Create a  `cluster issuer` yaml. Replace the email with a valid email address
 
