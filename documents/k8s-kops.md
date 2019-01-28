@@ -97,10 +97,8 @@ kops edit cluster kube.my.domain.com
 
 **NOTE** You can change the image (by default Debian) by using `--image`...the below example lists CentOS images (STILL experemental)
 
-```
-aws ec2 describe-images --region=us-west-2 --filters Name=product-code,Values=aw0evgkw8e5c1q413zgy5pjce
-# --image "aws-marketplace/CentOS Linux 7 x86_64 HVM EBS ENA 1805_01-b7ee8a69-ee97-4a49-9e68-afaee216db2e-ami-77ec9308.4"
-```
+* For Centos I used: `--image "aws-marketplace/CentOS Linux 7 x86_64 HVM EBS ENA 1805_01-b7ee8a69-ee97-4a49-9e68-afaee216db2e-ami-77ec9308.4"`
+* For Ubunti I used: `--image "099720109477/ubuntu/images/hvm-ssd/ubuntu-yakkety-16.10-amd64-server-20170719"`
 
 To "install" the cluster..."update" your aws account with the state saved in s3...
 
