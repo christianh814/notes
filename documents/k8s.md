@@ -635,6 +635,8 @@ kubectl --context=devman create deployment nginx --image=nginx
 kubectl --context=devman get pods
 ```
 
+More notes tk
+
 ## Helm
 
 There are two parts to Helm: The Helm client (`helm`) and the Helm server (`Tiller`).
