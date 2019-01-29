@@ -542,100 +542,98 @@ CURRENT   NAME                          CLUSTER             AUTHINFO            
 This is HIGH high level (more to come soon). First create a ns for this user
 
 ```
-kubectl create ns lsf158
+kubectl create ns development
 ```
 
-Generate key and get base64 of the csr
+View the clusters and contexts. This allows you to config the cluster, namespace and user for `kubectl` commands
 
 ```
-openssl genrsa -out user1.key 2048
-openssl req -new -key user1.key -out user1.csr -subj "/CN=user1/O=kusers"\n
-base64 -w0 < user1.csr
+kubectl config get-contexts
 ```
 
-Create a `CertificateSigningRequest` with that base64
+Generate a private key and a CSR for the user
 
 ```
-apiVersion: certificates.k8s.io/v1beta1
-kind: CertificateSigningRequest
-metadata:
-  name: user1-csr
-spec:
-  groups:
-  - system:authenticated
-  request: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1p6Q0NBVThDQVFBd0lqRU9NQXdHQTFVRUF3d0ZkWE5sY2pFeEVEQU9CZ05WQkFvTUIydDFjMlZ5YzI0dwpnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUtBb0lCQVFEWDJzWFVrMFdyMkdwcmR0b3hVWUt6Cml5dC9PbThtRDNWZGJJQWI1b2s4ZmtWNVZjVzlJRUNveDdkQnFURGMzWFdvUERnQW5oZy9qREJUK0o4SnpoNWQKMWVIY2twWVJPcjFnMlVlWGdrOHVid2UyZWprVVQ5enlHNjNyL20zR3M3V0c2Q3ViQUNvL1k2RmdDU09yNnVJUQpidDhWZGNMUmt5aWhqYWxiK1JyNTZMS2Y5VUNKNmpNSnhvWElBVTNRQmNQN2I1WWs4R2p3Q0JzckxHZE9vODkzClA1YUczUDBad1JVL2M4d0VWTVIxc2doWFhkbVdwa2dFaTlMcDlFUVAzMWJkZWWWYmJodDBWeGxRank4N0I4NDUKSStNMEtrTndkNTR1OTJFT2hkREJ6Vy9GaEZKTUNhSFYrUnNjWUw0KzlCbEZXUkoyOS9WNUFOSlVFTTR2bkhTLwpBZ01CQUFHZ0FEQU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FRRUFnZ2FwbzBKVzR0c2lnTDliMzRpUWN0a0tzbkQvCkJrOGNzb2RMb2h3Q3hqQ1lyMUF6elo2OXpEKzJqSStnOUJ1WnY5cEcvVW41ZE9YT3VwbXlrQ0FwVkxmR0pjZzcKNjRTWVcrNnFQZVorRWlXYUxheHByR3kwelV1ZytFNXZsMjV6VVdBYjQzZVVpM2dFcHNETzJneVlBazJmNHBaaAptU2VFYXM1NzJhTmxvZVZ2ZjhNRkpPbGd3ekY0MDg1Yk1vWmFpRWEzdW9nNHJBaFIyEXAMPLEvNEFCbXM1b2V2CmdoMVJkbEFxSHZvcmZEMXpwRWFQUnhqbEpuU05lclEzeXQ3bzlyN1JIWG5OcW9Kd09pTjl5UmJWQmFSNWc4c3gKS0F0cElENWJVVFlLTkxsUjQ3TmtFL29HZHFNNCt5eWhJYStMMDk3dkxGd1l2cmsrempLMXNQZlQrdz09Ci0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo=
-  usages:
-  - digital signature
-  - key encipherment
-  - client oauth
+openssl genrsa -out devman.key 2048
+openssl req -new -key devman.key -out devman.csr -subj "/CN=devman/O=development"
 ```
 
-Load it up it'll go into a pending state...approve the csr
+Use the CA keys for the Kubernetes cluster and set a 45 day expiration
 
 ```
-kubectl create -f sig-req.yaml 
-kubectl get csr
-kubectl certificate approve user1-csr
+openssl x509 -req -in devman.csr -CA ./ca.crt -CAkey ./ca.key -CAcreateserial -out devman.crt -days 45
 ```
 
-Cet the `crt` file for the user
+Set the `~/.kube/config` file for the user
 
 ```
-kubectl get csr user1-csr -o jsonpath='{.status.certificate}' | base64 --decode > user1.crt
+kubectl config set-credentials devman --client-certificate=devman.crt --client-key=devman.key
+kubectl config set-context devman --cluster=kluster.chx.osecloud.com --namespace=development --user=devman
 ```
 
-Set the context for this user (user `kubectl config view` to get info afterwards)
+Check the access
 
 ```
-kubectl config set-context user1 --context=k8s.example.com --cluster=k8s.example.com --namespace=lfs158 --user=user1
+kubectl --context=devman get pods
 ```
 
-Create a role
+Output should be
+> Error from server (Forbidden): pods is forbidden: User "devman" cannot list pods in the namespace "development"
+
+Now create a YAML file to associate RBAC
 
 ```
+cat <<EOF > role-dev.yaml
 kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  namespace: lfs158
-  name: pod-reader
+  namespace: development
+  name: developer
 rules:
-  - apiGroups: [""]
-    resources: ["pods"]
-    verbs: ["get", "watch", "list"]
+- apiGroups: [ "" , "extensions" , "apps" ]
+  resources: [ "deployments" , "replicasets" , "pods" ]
+  verbs: [ "*" ]
+EOF
 ```
 
-Create the role binding
+Create the RBAC object
 
 ```
+kubectl create -f role-dev.yaml
+```
+
+Create the rolebinding yaml
+
+```
+cat <<EOF > rolebind.yaml
 kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: pod-read-access
-  namespace: lfs158
+  name: developer-role-binding
+  namespace: development
 subjects:
 - kind: User
-  name: user1
-  apiGroup: rbac.authorization.k8s.io
+  name: devman
+  apiGroup: ""
 roleRef:
   kind: Role
-  name: pod-reader
-  apiGroup: rbac.authorization.k8s.io
+  name: developer
+  apiGroup: ""
+EOF
 ```
 
-Load these bad boys up
+Create the rolebinding object
 
 ```
-kubectl create  -f role.yaml
-kubectl create -f rolebinding.yaml
+kubectl create -f rolebind.yaml
 ```
 
-The user can now see the pods
+Test the binding/rbac
 
 ```
-kubectl --context=user1 get pods -n lfs158
+kubectl --context=devman create deployment nginx --image=nginx
+kubectl --context=devman get pods
 ```
-
-More details TK
 
 ## Helm
 
