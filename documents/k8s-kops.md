@@ -94,10 +94,10 @@ kops edit cluster kube.my.domain.com
 
 > You may `--master-count 3` if youre an in a region with only 2 AZ
 
-**NOTE** You can change the image (by default Debian) by using `--image`...the below example lists CentOS images (STILL experemental)
+**NOTE** You can change the image (by default Debian) by using `--image`...the below example images
 
 * For Centos I used (didn't work): `--image "aws-marketplace/CentOS Linux 7 x86_64 HVM EBS ENA 1805_01-b7ee8a69-ee97-4a49-9e68-afaee216db2e-ami-77ec9308.4"`
-* For Ubuntu I used (kind of worked): `--image "099720109477/ubuntu/images/hvm-ssd/ubuntu-yakkety-16.10-amd64-server-20170719"`
+* For Ubuntu I used: `--image "099720109477/ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20180405"`
 
 To "install" the cluster..."update" your aws account with the state saved in s3...
 
