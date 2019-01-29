@@ -707,3 +707,26 @@ Get the status
 ```
 helm status deadly-dachshund
 ```
+
+## Taint
+
+You `taint` a node in order to contol how pods get deployed
+
+* `<key>=value:PreferNoSchedule` - a node tainted `PreferNoSchedule` will only schedule pods when other nodes can't
+* `<key>=value:NoSchedule` - will never schedule a pod unless a `toleration` is in place
+* `<key>=value:NoExecute` - Pods that do not tolerate the taint are evicted immediately. Pods that **DO** tolerate the taint without specifying `tolerationSeconds` in their toleration specification remain bound forever And pods that **DO** tolerate the taint **BUT** with a specified `tolerationSeconds` remain bound for the specified amount of time
+* In all instances `<key>` can be whatever you want
+
+Examples:
+
+```
+kubectl taint node mynode.example.com foo=value:PreferNoSchedule
+kubectl taint node mynode.example.com foo=value:NoSchedule
+kubectl taint node mynode.example.com foo=value:NoExecute
+```
+
+To remove a taint
+
+```
+kubectl taint node mynode.example.com foo-
+```
