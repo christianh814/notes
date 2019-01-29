@@ -635,6 +635,8 @@ kubectl --context=devman create deployment nginx --image=nginx
 kubectl --context=devman get pods
 ```
 
+**NOTE** I lifted and created a shellscript to do this "automagically" for me [here](k8s-resources/mk-k8s-user.sh)
+
 More notes tk
 
 ## Helm
