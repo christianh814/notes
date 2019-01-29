@@ -7,8 +7,8 @@ fi
 
 USER=$1
 GROUP=$2
-CLUSTERENDPOINT=https://api.kluster.chx.osecloud.com
-CLUSTERNAME=kluster.chx.osecloud.com
+CLUSTERENDPOINT=https://api.example.com
+CLUSTERNAME=k8s.example.com
 CACERT=cluster/tls/ca.crt
 CAKEY=cluster/tls/ca.key
 CLIENTCERTKEY=clients/$USER/$USER-key.pem
