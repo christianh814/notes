@@ -838,3 +838,5 @@ Log in with the following creds...
 ```
 kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 ```
+
+Success! See [this blog post](https://rohanc.me/monitoring-kubernetes-prometheus-grafana/) for more info
