@@ -732,3 +732,105 @@ To remove a taint
 ```
 kubectl taint node mynode.example.com foo-
 ```
+
+## Monitoring
+
+> This assumes that you have a dynamic storageclass created
+
+Again, helm is your buddy here, first create a namespace for your monitoring stack
+
+```
+kubectl create ns monitoring
+```
+
+Install Prometheus
+
+```
+helm install stable/prometheus --version 6.7.4 --name prometheus --namespace monitoring
+```
+
+Next, I create a config file for grafana (based on the above prometheus install...my service name will be `prometheus-server`...yours may differ if you're not following allong exactly)
+
+```
+cat <<EOF > grafana-values.yaml
+persistence:
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  size: 5Gi
+
+datasources: 
+ datasources.yaml:
+   apiVersion: 1
+   datasources:
+   - name: Prometheus
+     type: prometheus
+     url: http://prometheus-server
+     access: proxy
+     isDefault: true
+
+dashboards:
+    kube-dash:
+      gnetId: 6663
+      revision: 1
+      datasource: Prometheus
+    kube-official-dash:
+      gnetId: 2
+      revision: 1
+      datasource: Prometheus
+
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+    - name: 'default'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: false
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards
+EOF
+```
+
+Once I have that, I install grafana
+
+```
+helm install --name grafana stable/grafana --version 1.11.6 --namespace monitoring -f grafana-values.yaml
+```
+
+Create an ingress for grafana
+
+```
+cat <<EOF | kubectl -n monitoring create -f -
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: "nginx"
+  name: grafana
+spec:
+  tls:
+  - hosts:
+    - grafana.apps.example.com
+    secretName: grafana-tls
+  rules:
+  - host: grafana.apps.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: grafana
+          servicePort: 80
+        path: /
+EOF
+```
+
+Log in with the following creds...
+
+* `admin` - this is the default username
+* `kubectl get secret --namespace ks8-monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo` - this is how you get the password
