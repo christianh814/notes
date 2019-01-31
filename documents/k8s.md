@@ -833,4 +833,8 @@ EOF
 Log in with the following creds...
 
 * `admin` - this is the default username
-* `kubectl get secret --namespace ks8-monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo` - this is how you get the password
+*  This is how you get the password
+
+```
+kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+```
