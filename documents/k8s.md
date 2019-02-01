@@ -800,7 +800,7 @@ Once I have that, I install grafana
 helm install --name grafana stable/grafana --version 1.11.6 --namespace monitoring -f grafana-values.yaml
 ```
 
-Create an ingress for grafana
+Create an ingress for grafana (note I'm using [TLS](k8s-ingress-helm.md#tls) here...you don't NEED to but it's recommended)
 
 ```
 cat <<EOF | kubectl -n monitoring create -f -
