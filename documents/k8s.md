@@ -958,4 +958,3 @@ Rollback to the version you want
 ```
 kubectl rollout undo deploy/nginx --to-revision=1
 ```
-```
