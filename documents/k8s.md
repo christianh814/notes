@@ -840,3 +840,14 @@ kubectl get secret --namespace monitoring grafana -o jsonpath="{.data.admin-pass
 ```
 
 Success! See [this blog post](https://rohanc.me/monitoring-kubernetes-prometheus-grafana/) for more info
+
+## K8S Oneliners
+
+__Create a pod ONLY (i.e no deployment/ds/etc) with nodeport only__
+
+```
+kubectl run --generator=run-pod/v1  nginx --image=nginx  -l app=nginx
+kubectl create service nodeport nginx --tcp=32002:80
+```
+
+^ Sometimes the port mapping doesn't work right...just `kubectl edit svc...` to change it to what you want.
