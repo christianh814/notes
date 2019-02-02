@@ -886,3 +886,43 @@ spec:
 ```
 
 This example also uses a volume (note; the volume needs to exists on BOTH if you want this paticular example to work for you)
+
+__Pod DNS__
+
+Create a deployment like this
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nginx
+    spec:
+      hostname: nginx-1
+      subdomain: nginx-svc
+      containers:
+      - image: nginx
+        name: nginx
+        resources: {}
+```
+
+Next after you `kubectl -f...` that bad boy; create a service name with the **SAME** name as the `subdomain` as up top
+
+```
+kubectl expose deployment nginx --name=nginx-svc --port=80 --target-port=80
+```
+
+Now you can nslookup both `<svc>.<namespace>.svc.cluster.local` and `<pod hostname from yaml>.<subdomain defined in yaml>.<namespace>.svc.cluster.local`
