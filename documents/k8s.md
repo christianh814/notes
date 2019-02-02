@@ -926,3 +926,36 @@ kubectl expose deployment nginx --name=nginx-svc --port=80 --target-port=80
 ```
 
 Now you can nslookup both `<svc>.<namespace>.svc.cluster.local` and `<pod hostname from yaml>.<subdomain defined in yaml>.<namespace>.svc.cluster.local`
+
+__Rollback Deployments__
+
+Create your deployment
+
+```
+kubectl create deployment nginx --image=nginx:1.7.9
+```
+
+Make a change, making sure to `--record` it
+
+```
+kubectl set image deploy/nginx nginx=nginx:1.9.1 --record=true
+```
+
+Make sure your change rolledouot
+
+```
+kubectl describe pods
+```
+
+List your rollouts
+
+```
+kubectl rollout history deploy/nginx
+```
+
+Rollback to the version you want
+
+```
+kubectl rollout undo deploy/nginx --to-revision=1
+```
+```
