@@ -843,6 +843,8 @@ Success! See [this blog post](https://rohanc.me/monitoring-kubernetes-prometheus
 
 ## K8S Oneliners
 
+Quick notes that don't require it's own category
+
 __Create a pod ONLY (i.e no deployment/ds/etc) with nodeport only__
 
 ```
@@ -851,3 +853,36 @@ kubectl create service nodeport nginx --tcp=32002:80
 ```
 
 ^ Sometimes the port mapping doesn't work right...just `kubectl edit svc...` to change it to what you want.
+
+__Init Containers__
+
+This example is, in part, taken from the [official documentation](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/#init-containers-in-use). Init containers basically run and exit before the actual containers run
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+spec:
+  containers:
+  - name: myapp-container
+    image: alpine
+    command: ['/bin/sh', '-c', '[[ -f /workdir/gentle.txt ]] && sleep 36000 || exit 1']
+    volumeMounts:
+    - mountPath: /workdir
+      name: workdir
+  initContainers:
+  - name: init-myservice
+    image: alpine
+    command: ['/bin/sh', '-c', 'touch -f /workdir/gentle.txt']
+    volumeMounts:
+    - mountPath: /workdir
+      name: workdir
+  volumes:
+  - name: workdir
+    emptyDir: {}
+```
+
+This example also uses a volume (note; the volume needs to exists on BOTH if you want this paticular example to work for you)
