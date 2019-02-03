@@ -849,7 +849,7 @@ __Create a pod ONLY (i.e no deployment/ds/etc) with nodeport only__
 
 ```
 kubectl run --generator=run-pod/v1  nginx --image=nginx  -l app=nginx
-kubectl create service nodeport nginx --tcp=32002:80
+kubectl create service nodeport nginx --node-port=32000 --tcp=80
 ```
 
 ^ Sometimes the port mapping doesn't work right...just `kubectl edit svc...` to change it to what you want.
