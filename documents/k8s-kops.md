@@ -166,3 +166,14 @@ If you have multiple clusters, get the name with...
 ```
 kops get cluster
 ```
+
+## Kops Export Kubecfg
+
+To export the kubecfg file...
+
+```
+export KUBECONFIG=$HOME/test-kubeconfig.yaml
+kops export kubecfg --name k8s.example.com --state s3://my-bucket-name
+```
+
+That'll save the state in the path that you set in the `KUBECONFIG` env variable
