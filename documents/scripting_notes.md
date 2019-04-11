@@ -4,6 +4,7 @@
 * [Misc Commands](#misc-commands)
 * [OpenVPN](#openvpn)
 * [Sendgrid](#sendgrid)
+* [VIM](#vim)
 
 ## KSH Notes
 
@@ -512,3 +513,24 @@ curl --request POST \
 You can also do `--data @/path/to/file.json`. You can use `envsubst` to substitute variables within this json file in scripts (I had to use `export key=val` within the script to get it to work)
 
 More info can be found on the [Sendgrid website](https://sendgrid.com/docs/for-developers/sending-email/curl-examples/)
+
+## VIM
+
+To split windows between files that you open (use Ctrl-w + arrows to move between windows)
+
+```
+vim -o file1.txt file2.txt # Splits Horizontally
+vim -O file1.txt file2.trxt # Splits Vertiallcy
+```
+
+From within vi you can use `vsp` for vertical split and `sp` for horizontal split. Example
+
+```
+:sp file2.txt
+```
+
+Create a new file within an open session by using `o <filename>`
+
+```
+:o mynewfile.txt
+```
