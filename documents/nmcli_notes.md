@@ -198,7 +198,7 @@ It is also possible to configure the network by editing interface configuration 
 
 The following are standard variables found in the file used for static or dynamic configuration.
 
-![table.nmcli.jpg](table.nmcli.jpg)
+![images/table.nmcli.jpg](table.nmcli.jpg)
 
 In the static settings, variables for IP address, prefix, and gateway have a number at the end. This allows multiple sets of values to be assigned to the interface. The DNS variable also has a number which is used to specify the order of lookup when multiple servers are specified.
 
