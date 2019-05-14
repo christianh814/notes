@@ -192,7 +192,7 @@ static-eth0  f3e8dd32-3c9d-48f6-9066-551e5b6e612d  802-3-ethernet  eth0
 It is also possible to configure the network by editing interface configuration files. Interface configuration files control the software interfaces for individual network devices. These files are usually named `/etc/sysconfig/network-scripts/ifcfg-<name>`, where `<name>` refers to the name of the device or connection that the configuration file controls.
 
 * [Configuration Options for ifcfg File](#configuration-options-for-ifcfg-file)
-* [Reloading Config](#reloading-config]
+* [Reloading Config](#reloading-config)
 
 ### Configuration Options for ifcfg File
 
