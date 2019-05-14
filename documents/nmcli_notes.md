@@ -7,6 +7,7 @@ These are notes for NetworkMangaer in no paticular order
 * [Configuring Hostname](#configuring-hostname)
 * [Configuring Networking Teaming](#configuring-networking-teaming)
 * [Configuring Software Bridges ](#configuring-software-bridges)
+* [Misc Notes](#misc)
 
 ## Configuring Networking with nmcli
 
@@ -522,4 +523,13 @@ Test with `brctl`
 
 ```
 root@host# brctl show
+```
+
+## Misc
+
+This is how you set up a DHCP interface with `PEERDNS=no`
+
+```
+nmcli con mod "Wired connection 1" ipv4.dns "192.168.1.2 192.168.1.3"
+nmcli con mod "Wired connection 1" ipv4.ignore-auto-dns yes
 ```
