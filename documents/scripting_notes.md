@@ -96,6 +96,12 @@ You need the backslash.
 
 ## Misc Commands
 
+Cool `PS1`
+
+```
+export PS1='\[\e[32m\u\]@\H \[\e[36m\W\] \[\e[33m\]\[\e[1m\]# \[\e[0m\]'
+```
+
 You can use `csplit` to split on a line number or a regex.
 
 I built 17 ldiff files at 4over using
