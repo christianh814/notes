@@ -10,4 +10,7 @@ func main() {
 	func(x int) {
 		fmt.Println("The number is", x)
 	}(5) // you pass arguemnts like you would any other function
+	for i := 0; i < 10; i++ {
+		fmt.Println(i)
+	}
 }

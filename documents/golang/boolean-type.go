@@ -5,6 +5,7 @@ import "fmt"
 var x bool
 
 func main() {
+	// comment
 	a := 7
 	b := 42
 	c := 42

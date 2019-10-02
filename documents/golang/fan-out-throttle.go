@@ -52,4 +52,3 @@ func timeConsumingWork(n int) int {
 	time.Sleep(time.Microsecond * time.Duration(rand.Intn(500)))
 	return n + rand.Intn(1000)
 }
-
