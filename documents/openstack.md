@@ -183,6 +183,8 @@ Then reboot
 
 ## Notes
 
+__Floating IPs__
+
 When you add a floating IP to an instance, it won't show the interface inside the instances with "ip a" or "ifconfig". So it's best to view/manage these using the nova client.
 
 ```
@@ -209,4 +211,24 @@ export OS_TENANT_NAME=admin
 export OS_AUTH_URL=http://192.168.1.75:35357/v2.0/
 export NOVACLIENT_DEBUG=1
 export NOVA_VERSION=2
+```
+
+__DNS__
+
+To setup the DNS that it gives out to the instances...first get your private subnet id
+
+```
+[root@rhosp ~(keystone_admin)]# neutron net-list
++--------------------------------------+---------+----------------------------------+------------------------------------------------------+
+| id                                   | name    | tenant_id                        | subnets                                              |
++--------------------------------------+---------+----------------------------------+------------------------------------------------------+
+| 58f5d4be-c083-4558-8afb-807529a7addb | public  | 0bdb127e80c64c68926fe2b0450822ce | bcb709d5-16e8-49e9-816c-40cd1bf6465f 172.16.1.0/24   |
+| ea2c4bc3-d5bf-4c83-808b-3f23509fba5c | private | 0bdb127e80c64c68926fe2b0450822ce | 639f199f-e140-4361-a608-766529ef2c8b 10.254.254.0/24 |
++--------------------------------------+---------+----------------------------------+------------------------------------------------------+
+```
+
+Then update it
+
+```
+ neutron subnet-update --dns-nameserver  8.8.8.8  639f199f-e140-4361-a608-766529ef2c8b
 ```
