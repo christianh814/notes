@@ -981,7 +981,7 @@ ipa dnsrecord-add cloud.chx worker1.openshift4 --a-rec 192.168.1.114
 ipa dnsrecord-add 1.168.192.in-addr.arpa. 114 --ptr-rec=worker1.openshift4.cloud.chx.
 
 ipa dnsrecord-add cloud.chx worker2.openshift4 --a-rec 192.168.1.115
-ipa dnsrecord-add 1.168.192.in-addr.arpa. 115 --ptr-rec=worker5.openshift4.cloud.chx.
+ipa dnsrecord-add 1.168.192.in-addr.arpa. 115 --ptr-rec=worker2.openshift4.cloud.chx.
 
 ipa dnsrecord-add cloud.chx bootstrap.openshift4 --a-rec 192.168.1.116
 ipa dnsrecord-add 1.168.192.in-addr.arpa. 116 --ptr-rec=bootstrap.openshift4.cloud.chx.
