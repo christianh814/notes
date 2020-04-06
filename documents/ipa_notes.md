@@ -958,3 +958,41 @@ Cheatsheet
 
 ![gogs_ipa](./gogs_ipa.png)
 
+## IPA Setup for OpenShift
+
+QnD
+
+```
+ipa dnsrecord-add cloud.chx api.openshift4 --a-rec 192.168.1.110
+ipa dnsrecord-add 1.168.192.in-addr.arpa. 110 --ptr-rec=api.openshift4.cloud.chx.
+ipa dnsrecord-add cloud.chx api-int.openshift4 --cname-rec=api.openshift4.cloud.chx.
+ipa dnsrecord-add cloud.chx *.apps.openshift4 --a-rec 192.168.1.110
+
+ipa dnsrecord-add cloud.chx master1.openshift4 --a-rec 192.168.1.111
+ipa dnsrecord-add 1.168.192.in-addr.arpa. 111 --ptr-rec=master1.openshift4.cloud.chx.
+
+ipa dnsrecord-add cloud.chx master2.openshift4 --a-rec 192.168.1.112
+ipa dnsrecord-add 1.168.192.in-addr.arpa. 112 --ptr-rec=master2.openshift4.cloud.chx.
+
+ipa dnsrecord-add cloud.chx master3.openshift4 --a-rec 192.168.1.113
+ipa dnsrecord-add 1.168.192.in-addr.arpa. 113 --ptr-rec=master3.openshift4.cloud.chx.
+
+ipa dnsrecord-add cloud.chx worker1.openshift4 --a-rec 192.168.1.114
+ipa dnsrecord-add 1.168.192.in-addr.arpa. 114 --ptr-rec=worker1.openshift4.cloud.chx.
+
+ipa dnsrecord-add cloud.chx worker2.openshift4 --a-rec 192.168.1.115
+ipa dnsrecord-add 1.168.192.in-addr.arpa. 115 --ptr-rec=worker5.openshift4.cloud.chx.
+
+ipa dnsrecord-add cloud.chx bootstrap.openshift4 --a-rec 192.168.1.116
+ipa dnsrecord-add 1.168.192.in-addr.arpa. 116 --ptr-rec=bootstrap.openshift4.cloud.chx.
+
+#  RFC 2782 says CNAMEs are NOT allowed, must be A records - but it still works
+ipa dnsrecord-add cloud.chx etcd-0.openshift4 --cname-rec=master1.openshift4.cloud.chx.
+ipa dnsrecord-add cloud.chx etcd-1.openshift4 --cname-rec=master2.openshift4.cloud.chx.
+ipa dnsrecord-add cloud.chx etcd-2.openshift4 --cname-rec=master3.openshift4.cloud.chx.
+
+
+ipa dnsrecord-add cloud.chx _etcd-server-ssl._tcp.openshift4 --srv-rec="0 10 2380 etcd-0.openshift4.cloud.chx." \
+--srv-rec="0 10 2380 etcd-1.openshift4.cloud.chx." \
+--srv-rec="0 10 2380 etcd-2.openshift4.cloud.chx." 
+```
