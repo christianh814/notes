@@ -958,7 +958,7 @@ Cheatsheet
 
 ![gogs_ipa](./gogs_ipa.png)
 
-## IPA Setup for OpenShift
+## IPA Setup for OpenShift 4
 
 QnD
 
