@@ -47,3 +47,15 @@ You can add virtulazation on the UI or on the command line like so
   <feature policy='require' name='vmx'/>
 </cpu>
 ```
+
+# Export to VMware
+
+I followed [this](https://blog.ktz.me/migrate-qcow2-images-from-kvm-to-vmware/) and [this](https://blog.ktz.me/gotchas-when-migrating-fedora-qcow2-images-to-vmware/) when migrating from Libvirtd to vSphere/ESXi.
+
+In the end I still had to boot into "rescue" mode from grub and run the following in that shell
+
+```
+dracut --regenerate-all --force
+```
+
+Looks like [this](https://possiblelossofprecision.net/?p=2293) is also a good howto as well.
