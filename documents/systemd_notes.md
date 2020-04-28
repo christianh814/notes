@@ -339,3 +339,32 @@ Show all kernel logs from previous boot:
 root@host# journalctl -k -b -1
 ```
 
+## SystemD with Podman
+
+The "docker replacement" of [podman](https://podman.io/) can create systemd files for you so you don't have to worry about creating your own for your own services!
+
+Example:
+
+Create your container...
+
+```
+podman run --name=webserver -d -p 8888:8080 quay.io/redhatworkshops/welcome-php:latest
+```
+
+Generate the systemd service
+
+```
+podman generate systemd -n webserver >  /etc/systemd/system/webserver
+```
+
+Reload systemd
+
+```
+systemctl --system daemon-reload
+```
+
+Enable it for next reboot
+
+```
+systemctl enable webserver
+```
