@@ -7,6 +7,7 @@ My git notes in no paticular order
 * [Committing](git_notes.md#committing)
 * [Branching Out](git_notes.md#branching-out)
 * [Aliases](git_notes.md#aliases)
+* [Squashing](#squashing)
 
 ## Add Your Keys
 
@@ -186,5 +187,25 @@ Get a list of current aliases with the following command
 ```
 git config --get-regexp alias
 ```
+
+## Squashing
+
+Highlevel...
+
+Squash previous 3 commits...
+
+```shell
+git rebase -i HEAD~3
+```
+
+The interactive thing is pretty useful. "Pick", "drop" or "squash" whatever you want. Then..
+
+
+```shell
+git push -f origin <branch name>
+```
+
+The `-f` is needed to to force a commit
+
 
 -30-
