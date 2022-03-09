@@ -95,3 +95,23 @@ $ tree  .
 ├── LICENSE
 └── main.go
 ```
+
+# Packages
+
+Andy Block says to store your packages like this
+
+```
+tree ./
+./
+├── cmd
+│   ├── foobar_bazz.go
+│   ├── foobar.go
+│   └── root.go
+├── go.mod
+├── go.sum
+├── LICENSE
+├── main.go
+└── pkg # Here at the root of your project
+    └── hello
+        └── hello.go
+```
