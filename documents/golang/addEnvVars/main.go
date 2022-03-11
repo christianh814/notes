@@ -34,15 +34,15 @@ func main() {
 	ev := []corev1.EnvVar{
 		{
 			Name:  "ROUTER_SUBDOMAIN",
-			Value: `"${name}-${namespace}.apps.127.0.0.1.nip.io"`,
+			Value: "${name}-${namespace}.apps.127.0.0.1.nip.io",
 		},
 		{
 			Name:  "ROUTER_ALLOW_WILDCARD_ROUTES",
-			Value: `"true"`,
+			Value: "true",
 		},
 		{
 			Name:  "ROUTER_OVERRIDE_HOSTNAME",
-			Value: `"true"`,
+			Value: "true",
 		},
 	}
 
