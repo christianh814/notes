@@ -1,0 +1,6 @@
+type: "yaml"
+hello: "world"
+language:
+  - "english"
+  - "spanish"
+  - "german"
