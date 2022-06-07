@@ -3,7 +3,7 @@
 Install it using go
 
 ```shell
-go install github.com/spf13/cobra/cobra@latest
+go install github.com/spf13/cobra-cli@latest
 ```
 
 Put in in your path
