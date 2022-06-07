@@ -9,13 +9,13 @@ go install github.com/spf13/cobra-cli@latest
 Put in in your path
 
 ```shell
-sudo mv $GOPATH/bin/cobra /usr/local/bin/
+sudo mv $GOPATH/bin/cobra-cli /usr/local/bin/
 ```
 
 Bash completion
 
 ```shell
-source <(cobra completion bash)
+source <(cobra-cli completion bash)
 ```
 
 # Init
@@ -26,10 +26,10 @@ First, init go modules (replace with the repo where it's going to be stored)
 go mod init github.com/christian/mycli
 ```
 
-Then, use `cobra` to scaffold (use `--help` if you want to know more)
+Then, use `cobra-cli` to scaffold (use `--help` if you want to know more)
 
 ```shell
-cobra init --author="Christian Hernandez christian@email.com" --license=apache --viper=true
+cobra-cli init --author="Christian Hernandez christian@email.com" --license=apache --viper=true
 ```
 
 You now have a program
@@ -43,7 +43,7 @@ go run main.go
 Add commands. Like `foobar`
 
 ```shell
-cobra add foobar --author="Christian Hernandez christian@email.com" --license=apache --viper=true
+cobra-cli add foobar --author="Christian Hernandez christian@email.com" --license=apache --viper=true
 ```
 
 You can now pass `foobar` to your command
@@ -59,7 +59,7 @@ You can add as many as you need
 If you want to add a command to `foobar`, you pass the `--parent` command. For example, if you want to add `bazz` to the `foobar` command.
 
 ```shell
-cobra add bazz --parent="foobarCmd" --author="Christian Hernandez christian@email.com" --license=apache --viper=true
+cobra-cli add bazz --parent="foobarCmd" --author="Christian Hernandez christian@email.com" --license=apache --viper=true
 ```
 
 Now you can run
