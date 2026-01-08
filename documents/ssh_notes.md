@@ -86,6 +86,12 @@ For a "reverse tunnel" (i.e. tunnel back into the server I'm ssh-ing from)
 root@host# ssh -CfN cci-bridge.4over.com -l root -R 2222:localhost:22
 ```
 
+^ After then I can do
+
+```
+root@cci-bridge# ssh root@localhost -p 2222 #<~ Gets me into "host" above
+```
+
 ## SSH Webproxy
 
 A SOCKS proxy is basically an SSH tunnel in which specific applications forward their traffic down the tunnel to the server, and then on the server end, the proxy forwards the traffic out to the general Internet. Unlike a VPN, a SOCKS proxy has to be configured on an app by app basis on the client machine, but can be set up without any specialty client agents.
